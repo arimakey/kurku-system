@@ -1,4 +1,6 @@
 import requests
+import geopy
+from geopy.geocoders import Nominatim
 
 # LocationIQ API key
 API_KEY = 'pk.ce50a5663503058cf13001062b0db6a7'
@@ -11,7 +13,8 @@ def get_suggested_places(query):
     params = {
         'key': API_KEY,
         'q': query,
-        'format': 'json'
+        'format': 'json',
+        'limit': 20
     }
 
     try:
@@ -38,12 +41,19 @@ if __name__ == "__main__":
     input_query = input("Ingrese un lugar: ")
     
     suggestions = get_suggested_places(input_query)
+    # Crear una instancia del geolocalizador con un user_agent personalizado
+    geolocator = Nominatim(user_agent="pachamama_project")
 
     if suggestions:
         try:
             index = int(input(f"Selecciona un lugar (0-{len(suggestions) - 1}): "))
             if 0 <= index < len(suggestions):
-                print(f"Has seleccionado: {suggestions[index]}")
+                location = geolocator.geocode(suggestions[index])
+                if location:
+                    print(f"Coordenadas de {suggestions[index]}:")
+                    print(f"{location.latitude},{location.longitude}")
+                else:
+                    print("No se encontraron coordenadas para el lugar ingresado.")
             else:
                 print("Fuera de rango")
         except ValueError:
