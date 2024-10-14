@@ -1,0 +1,6 @@
+geopy
+earthengine-api
+matplotlib
+numpy
+opencv-python
+python-dotenv

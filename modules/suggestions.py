@@ -19,10 +19,9 @@ def get_suggested_places(query):
 
     try:
         response = requests.get(url, params=params)
-        response.raise_for_status()  # Check for HTTP errors
+        response.raise_for_status() 
         places = response.json()
 
-        # Lista de sugerencias
         suggestions = [place['display_name'] for place in places]
 
         print(f"Suggestions for '{query}':")
@@ -36,22 +35,15 @@ def get_suggested_places(query):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-if __name__ == "__main__":
-    # Selecciona lugar
-    input_query = input("Ingrese un lugar: ")
-    
-    suggestions = get_suggested_places(input_query)
-    # Crear una instancia del geolocalizador con un user_agent personalizado
+def select_suggested_places(suggestions, index):
     geolocator = Nominatim(user_agent="pachamama_project")
-
     if suggestions:
         try:
-            index = int(input(f"Selecciona un lugar (0-{len(suggestions) - 1}): "))
             if 0 <= index < len(suggestions):
                 location = geolocator.geocode(suggestions[index])
                 if location:
                     print(f"Coordenadas de {suggestions[index]}:")
-                    print(f"{location.latitude},{location.longitude}")
+                    return location.latitude, location.longitude
                 else:
                     print("No se encontraron coordenadas para el lugar ingresado.")
             else:
