@@ -2,6 +2,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GdkPixbuf
 from utils.methods import apply_css, on_image_button_clicked
+
 def select_place(on_previous_button_clicked):
          # Crear un Box vertical PRINCIPAL
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -66,16 +67,16 @@ def select_place(on_previous_button_clicked):
                     self.ruta = ruta
         # Crear una lista de objetos Imagen
         imagenes = [
-            Imagen("Imagen 1 de morat ", "images/morat.jpg"),
-            Imagen("Imagen 2 de morat ", "images/morat1.jpg"),
-            Imagen("Imagen 3 de morat ", "images/morat.jpg"),
-            Imagen("Imagen 4 de morat ", "images/morat1.jpg"),
-            Imagen("Imagen 5 de morat ", "images/morat.jpg"),
-            Imagen("Imagen 1 de morat ", "images/morat.jpg"),
-            Imagen("Imagen 2 de morat ", "images/morat1.jpg"),
-            Imagen("Imagen 3 de morat ", "images/morat.jpg"),
-            Imagen("Imagen 4 de morat ", "images/morat1.jpg"),
-            Imagen("Imagen 5 de morat ", "images/morat.jpg")
+            Imagen("Imagen 1", "images/seleccione.jpg"),
+            Imagen("Imagen 2", "images/seleccione.jpg"),
+            Imagen("Imagen 3", "images/seleccione.jpg"),
+            Imagen("Imagen 4", "images/seleccione.jpg"),
+            Imagen("Imagen 5", "images/seleccione.jpg"),
+            Imagen("Imagen 1", "images/seleccione.jpg"),
+            Imagen("Imagen 2", "images/seleccione.jpg"),
+            Imagen("Imagen 3", "images/seleccione.jpg"),
+            Imagen("Imagen 4", "images/seleccione.jpg"),
+            Imagen("Imagen 5", "images/seleccione.jpg")
         ]
         def mostrar_nombres():
             # Inicializar child al primer hijo de result

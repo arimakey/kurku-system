@@ -1,13 +1,16 @@
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw
+
+
 
 # Importar las pantallas desde los archivos
 from screens.models import models
 from screens.select_place import select_place
 from utils.methods import apply_css
 
-class MainWindow(Gtk.Window):
+class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app)
         self.set_title("Kurku")
@@ -59,7 +62,7 @@ class MainWindow(Gtk.Window):
         self.stack.set_visible_child_name("screen1")
 
 
-class MainApp(Gtk.Application):
+class MainApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="com.models")
         
