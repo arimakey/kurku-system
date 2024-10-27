@@ -1,0 +1,47 @@
+import gi
+gi.require_version("Gtk", "4.0")
+from gi.repository import Gtk
+
+class ExampleWindow(Gtk.ApplicationWindow):
+    def __init__(self):
+        super().__init__()
+        self.set_title("Contenedores")
+        self.set_default_size(600, 400)
+
+        # Crear un contenedor horizontal (HBox)
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        self.set_child(hbox)
+
+        # Contenedor izquierdo (VBox)
+        vbox_left = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        vbox_left.set_hexpand(False)  # No expandir horizontalmente
+        vbox_left.set_vexpand(True)  # Expandir verticalmente
+        vbox_left.set_size_request(150, -1)  # Tamaño fijo en ancho (150px)
+        
+        # Agregar algo de contenido al contenedor izquierdo
+        label_left = Gtk.Label(label="Contenedor Izquierdo")
+        vbox_left.append(label_left)
+        
+        # Agregar el contenedor izquierdo al contenedor horizontal
+        hbox.append(vbox_left)
+
+        # Contenedor derecho (VBox)
+        vbox_right = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        vbox_right.set_hexpand(True)  # Expandir horizontalmente (ocupar más espacio)
+        vbox_right.set_vexpand(True)  # Expandir verticalmente
+        
+        # Agregar algo de contenido al contenedor derecho
+        label_right = Gtk.Label(label="Contenedor Derecho (más ancho)")
+        vbox_right.append(label_right)
+        
+        # Agregar el contenedor derecho al contenedor horizontal
+        hbox.append(vbox_right)
+
+# Crear y mostrar la ventana
+class MyApp(Gtk.Application):
+    def do_activate(self):
+        win = ExampleWindow()
+        win.present()
+
+app = MyApp()
+app.run()

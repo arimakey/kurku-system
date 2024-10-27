@@ -1,0 +1,85 @@
+headerbar {
+    background: #303030;  /* Color de fondo */
+    color: #979796;               /* Color del texto */
+    min-height: 5px; 
+    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
+    font-weight: bold;          /* Hacer el texto en negrita */
+    font-size: 14px;           /* Tamaño de la fuente */
+}
+
+headerbar button {
+    color: #D9D9D9;  /* Color del texto de los botones */
+}
+window {
+    background-color: #1F1F1F; /* Cambia este código de color al que desees */
+}
+
+.tittle-label {
+    color: #D9D9D9;             
+    font-size: 12px;         
+    font-weight: bold;        
+    /* padding: 5px;  */
+    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
+           
+}
+.tittle-label_{
+    color: #A5A5A4;             
+    font-size: 12px;         
+    font-weight: bold;        
+    padding: 5px; 
+    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
+}
+.button{
+    background: #303030;  /* Color de fondo */
+    color: #D9D9D9;   
+    border: none; /* Eliminar el borde */
+    border-radius: 10px; /* Cuanto mayor sea el valor, más redondeado será el botón */
+   
+}
+.button:hover {
+    background: #636463; /* Color al pasar el mouse */
+}
+
+.button.selected {
+    /* background: #636463;  */
+    border: 1.5px solid #D9D9D9; /* Borde: grosor, estilo y color */
+}
+
+.buscador {
+    background: #1F1F1F; /* Color de fondo */
+    color: #A5A5A4; /* Color del texto */
+    border: 1.0px solid #A5A5A4;  /*Borde: grosor, estilo y color */
+    border-radius: 10px;
+}
+
+.buscador_boton {
+    background: #303030; /* Color de fondo */
+    color: #FFFFFF; /* Color del texto */
+    border-radius: 10px;
+    border: none; /* Eliminar el borde */
+}
+.lista_resultados:hover {
+    background: #636463; /* Color al pasar el mouse */
+}
+.lista_resultados.selected {
+    /* background: #636463;  */
+    border: 1.5px solid #D9D9D9; /* Borde: grosor, estilo y color */
+}
+.lista_resultados {
+    background: #1F1F1F; /* Color de fondo */
+    color: #D9D9D9; /* Color del texto */
+    border: none;  /*Borde: grosor, estilo y color */
+    border-radius: 10px;
+}
+.box_result {
+    background: #303030; /* Color de fondo */
+    border: none;  /*Borde: grosor, estilo y color */
+    border-radius: 10px;
+}
+.label_result {
+    color: #D9D9D9;             
+    font-size: 12px;         
+    font-weight: bold;        
+    padding: 5px; 
+    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
+}

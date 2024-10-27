@@ -1,13 +1,15 @@
-from modules import earth_images, project, suggestions
+from screens.select_place import select_place # Importar la clase de la nueva ventana
+class Methods:
+    def __init__(self, main_window):
+        self.main_window = main_window  # Mantener referencia a la ventana principal
 
+    def on_next_button_clicked(self, button, main_window):
+    # Crear una nueva ventana
+        new_window = select_place()
 
-if __name__ == "__main__":
-    location = input("Ingresa un lugar a buscar: ")
-    get_suggestions = suggestions.get_suggested_places(location)
+        # Mostrar la nueva ventana
+        new_window.present()
 
-    index = int(input("Selecciona uno: "))
-    latitude, longitude = suggestions.select_suggested_places(get_suggestions, index)
-
-    url_image = earth_images.get_image(longitude, latitude)
-
-    print(url_image)
+        # Cerrar la ventana principal (actual)
+        # if main_window:
+        #     main_window.close()
