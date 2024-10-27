@@ -79,6 +79,9 @@ def select_place(on_previous_button_clicked):
             Imagen("Imagen 5", "images/seleccione.jpg")
         ]
         def mostrar_nombres():
+
+            texto = entry.get_text()
+            print(f"Buscando nombres que contengan: {texto}")
             # Inicializar child al primer hijo de result
             child = result_box.get_first_child()
             
