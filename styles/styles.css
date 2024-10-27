@@ -83,3 +83,8 @@ window {
     padding: 5px; 
     font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
 }
+
+.imagen_resultado {
+    border-radius: 15px; /* Ajusta el valor para cambiar el radio del borde */
+    border: 1px solid #4285f4; /* Borde opcional */
+}

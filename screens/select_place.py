@@ -1,25 +1,19 @@
-# new_window.py
-
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GdkPixbuf
-
-class select_place(Gtk.Window):
-    def __init__(self):
-        super().__init__(title="Kurku")
-        self.set_default_size(800, 600)
-
+from utils.methods import apply_css, on_image_button_clicked
+def select_place(on_previous_button_clicked):
          # Crear un Box vertical PRINCIPAL
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        main_box.set_margin_top(30)    # Margen superior
-        main_box.set_margin_bottom(30)  # Margen inferior
-        main_box.set_margin_start(50)   # Margen izquierdo
-        main_box.set_margin_end(50)     # Margen derecho
-        self.set_child(main_box)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        main_box.set_margin_top(10)    # Margen superior
+        main_box.set_margin_bottom(10)  # Margen inferior
+        main_box.set_margin_start(10)   # Margen izquierdo
+        main_box.set_margin_end(10)     # Margen derecho
+        # self.set_child(main_box)
 
         # Crear un Box horizontal para el buscador
         search_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        search_box.set_margin_bottom(10)  # Margen inferior
+        search_box.set_margin_bottom(20)  # Margen inferior
         #search_box.set_valign(Gtk.Align.FILL)  # Alinear verticalmente para llenar
 
         # Crear un Box horizontal para el LOS RESULTADOS DE LA BUSQUEDA
@@ -65,41 +59,6 @@ class select_place(Gtk.Window):
         search_box.append(search_button)
       
     # RESULTADOS E IMAGEN
-       
-    # RESULTADOS
-     # Crear un contenedor con barra de desplazamiento
-        scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)  # Desplazamiento solo vertical
-        scrolled_window.set_min_content_height(180)  # Altura mínima visible
-        #Crear un contenedor de resultados
-        result = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        result.set_css_classes(["box_result"])  # Agregar una clase CSS
-
-        # Agregar el contenedor de resultados al scrolled_window
-        scrolled_window.set_child(result)
-        result_box.append(scrolled_window)
-      
-
-         # Titulo
-        text_result= Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        text_result.set_halign(Gtk.Align.CENTER)  # Alinear el contenido al centro
-
-        label_result = Gtk.Label(label="Resultados")
-        label_result.set_margin_top(10)  # Margen superior
-        label_result.set_margin_bottom(0)  # Margen inferior
-        label_result.set_css_classes(["label_result"])
-
-        text_result.append(label_result)
-        result.append(text_result)
-
-        # IMAGEN
-        # Crear un contenedor para la imagen con tamaño fijo
-        self.image_box = Gtk.Box()
-        self.image_box.set_size_request(250, 250)
-        #self.image_box.set_css_classes(["buscador"]) 
-        result_box.append(self.image_box)
-
-        self.image_widget = None  # Widget de imagen actual
         
         class Imagen:
                 def __init__(self, nombre, ruta):
@@ -118,25 +77,94 @@ class select_place(Gtk.Window):
             Imagen("Imagen 4 de morat ", "images/morat1.jpg"),
             Imagen("Imagen 5 de morat ", "images/morat.jpg")
         ]
-        
-        for imagen in imagenes:
-            # Crear un botón para cada imagen
-            button = Gtk.Button()
-            button.set_margin_start(10)  # Margen izquierdo
-            button.set_margin_end(10)    # Margen derecho
-            button.set_css_classes(["lista_resultados"])  # Agregar una clase CSS
-            button.set_hexpand(True)
-            # Conectar el evento "clicked" al método para mostrar la imagen
-            button.connect("clicked" ,self.on_image_button_clicked,self.image_box, imagen.ruta)  # Pasar el contenedor de imagen y la imagen actual
-            # Crear una etiqueta con el nombre de la imagen
-            label = Gtk.Label(label=imagen.nombre)
-            label.set_margin_top(6)  # Margen superior
-            label.set_margin_bottom(6)  # Margen inferior
-            button.set_child(label)
-            result.append(button)
+        def mostrar_nombres():
+            # Inicializar child al primer hijo de result
+            child = result_box.get_first_child()
+            
+            # Limpiar el área de resultados
+            child = result_box.get_first_child()
+            while child is not None:
+                result_box.remove(child)
+                child = result_box.get_first_child()
+                
+             # RESULTADOS
+            #Crear un contenedor de resultados
+            result = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+            # result.set_size_request(300, -1)
+            result.set_css_classes(["box_result"])  # Agregar una clase CSS
+
+             # Titulo
+            text_result= Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+            text_result.set_halign(Gtk.Align.CENTER)  # Alinear el contenido al centro
+
+            label_result = Gtk.Label(label="Resultados")
+            label_result.set_margin_top(10)  # Margen superior
+            label_result.set_margin_bottom(0)  # Margen inferior
+            label_result.set_css_classes(["label_result"])
+
+            text_result.append(label_result)
+            result.append(text_result)
+
+            scrolled_result = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+
+            # Crear un contenedor con barra de desplazamiento
+            scrolled_window = Gtk.ScrolledWindow()
+            scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)  # Desplazamiento solo vertical
+            scrolled_window.set_min_content_height(320)  # Altura mínima visible
+            # scrolled_window.set_hexpand(True)
+            # scrolled_window.set_vexpand(False)
+           
+            scrolled_window.set_child(scrolled_result)
+            # Agregar el contenedor de resultados al scrolled_window
+            result.append(scrolled_window)
+
+            result_box.append(result)
+
+            # IMAGEN
+            # Crear un contenedor para la imagen con tamaño fijo
+            image_box = Gtk.Box()
+            image_box.set_css_classes(["imagen_resultado"])  # Agregar una clase CSS
+            image_box.set_size_request(250, 250)
+            image_box.set_hexpand(True)
+            image_box.set_vexpand(True)
+            result_box.append(image_box)
+
+            # Agregar cada nombre como un label en el área de resultados
+            for imagen in imagenes:
+                # Crear un botón para cada imagen
+                button = Gtk.Button()
+                button.set_margin_start(10)  # Margen izquierdo
+                button.set_margin_end(10)    # Margen derecho
+                button.set_css_classes(["lista_resultados"])  # Agregar una clase CSS
+                button.set_hexpand(True)
+                # Conectar el evento "clicked" al método para mostrar la imagen
+                # Usar lambda para pasar argumentos adicionales
+                button.connect("clicked", lambda btn, ruta=imagen.ruta: on_image_button_clicked(btn, image_box, ruta))  # Pasar el contenedor de imagen y la imagen actual
+                # Crear una etiqueta con el nombre de la imagen
+                label = Gtk.Label(label=imagen.nombre)
+                label.set_margin_top(6)  # Margen superior
+                label.set_margin_bottom(6)  # Margen inferior
+                button.set_child(label)
+                scrolled_result.append(button)
+            #Mostrar imagen por defecto //Seleccione un opcion
+            
+            # Cargar la nueva imagen correspondiente
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file("images/seleccione.jpg")
+            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
+            image_widget.set_css_classes(["imagen_resultado"])
+
+            image_widget.set_hexpand(True)
+
+            # Agregar la nueva imagen al image_box
+            image_box.append(image_widget)
+            image_box.show()
+
+          # Conectar el botón de búsqueda para mostrar los nombres
+        search_button.connect("clicked", lambda btn: mostrar_nombres())
     
      # CONTENIDO PARA ANTERIOR Y SIGUIENTE
         back_button=  Gtk.Button()
+        back_button.connect("clicked", on_previous_button_clicked)
         # Crear un contenedor horizontal para el ícono y el texto
         back_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         back_box.set_margin_start(10)     # Margen derecho
@@ -180,31 +208,10 @@ class select_place(Gtk.Window):
         button_box.append(next_button)
         button_box.set_margin_top(15)
 
-    def on_image_button_clicked(self, button, image_box, ruta_imagen):
-                # Llamar a la función para mostrar la imagen
-                self.image_widget = self.mostrar_imagen(image_box, self.image_widget, ruta_imagen)
+        apply_css()
+    
+        return main_box
 
-            # En tu función mostrar_imagen, deja todo igual
-    def mostrar_imagen(self,image_box, image_widget, ruta_imagen):
-                """
-                Muestra la imagen en el contenedor image_box, reemplazando la imagen anterior.
-                """
-                # Eliminar cualquier imagen previa del image_box
-                if image_widget:
-                    image_box.remove(image_widget)
-
-                # Cargar la nueva imagen correspondiente
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
-                image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
-                image_widget.set_hexpand(True)
-
-                # Agregar la nueva imagen al image_box
-                image_box.append(image_widget)
-
-                # Refrescar la interfaz para que se vea la imagen actualizada
-                image_box.show()
-
-                return image_widget  # Devolvemos el nuevo widget para ser reutilizado
             
         
 

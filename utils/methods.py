@@ -46,26 +46,33 @@ def on_button_clicked_model(self, button_selected, other_button1, other_button2,
             other_button1.get_style_context().remove_class("selected")
             other_button2.get_style_context().remove_class("selected")
 
-def mostrar_imagen(image_box, image_widget, ruta_imagen):
+
+def on_image_button_clicked(button, image_box, ruta_imagen):
     """
-    Muestra la imagen en el contenedor image_box, reemplazando la imagen anterior.
+    Llama a la función para mostrar la imagen en el contenedor `image_box`.
+    """
+    mostrar_imagen(image_box, ruta_imagen)
+
+def mostrar_imagen(image_box, ruta_imagen):
+    """
+    Muestra la imagen en el contenedor `image_box`, reemplazando cualquier imagen anterior.
     """
     # Eliminar cualquier imagen previa del image_box
-    if image_widget:
-        image_box.remove(image_widget)
+    child = image_box.get_first_child()
+    while child:
+        image_box.remove(child)
+        child = image_box.get_first_child()  # Actualizar al nuevo primer hijo después de la eliminación
 
     # Cargar la nueva imagen correspondiente
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(ruta_imagen, 300, 300, True)
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
     image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
+    image_widget.set_hexpand(True)
+    image_widget.set_css_classes(["imagen_resultado"])
+
 
     # Agregar la nueva imagen al image_box
     image_box.append(image_widget)
-
-    # Refrescar la interfaz para que se vea la imagen actualizada
     image_box.show()
 
-    return image_widget  # Devolvemos el nuevo widget para ser reutilizado
-
-
-
+    return image_widget  # Devolver el widget para ser reutilizado
 

@@ -2,31 +2,15 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk, Gio
 from utils.methods import apply_css, on_button_clicked_satellite, on_button_clicked_model
-from main import Methods
-class Models(Gtk.Application):
-    def __init__(self):
-        super().__init__(application_id="com.models")
-
-    def do_activate(self):
-        # Crear una ventana
-        window = Gtk.ApplicationWindow(application=self)
-        window.set_title("Kurku")
-        window.set_default_size(800, 600)
-
-        # Crear una barra de herramientas (HeaderBar)
-        header = Gtk.HeaderBar()
-        header.set_title_widget(Gtk.Label(label="Kurku"))  # Establecer el título en la barra
-        header.set_show_title_buttons(True)  # Mostrar botones de cerrar, minimizar, maximizar
-        # Establecer la barra de herramientas como encabezado de la ventana
-        window.set_titlebar(header)
 
     # Crear un Box vertical PRINCIPAL
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        main_box.set_margin_top(30)    # Margen superior
-        main_box.set_margin_bottom(30)  # Margen inferior
-        main_box.set_margin_start(50)   # Margen izquierdo
-        main_box.set_margin_end(50)     # Margen derecho
-        window.set_child(main_box) # Agregar el Box a la ventana
+def models(on_next_button_clicked):
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        main_box.set_margin_top(10)    # Margen superior
+        main_box.set_margin_bottom(10)  # Margen inferior
+        main_box.set_margin_start(10)   # Margen izquierdo
+        main_box.set_margin_end(10)     # Margen derecho
+        # window.set_child(main_box) Agregar el Box a la ventana
 
         # Crear un Box horizontal
         select_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
@@ -44,8 +28,7 @@ class Models(Gtk.Application):
         satellite_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         satellite_box.set_hexpand(False)  # Permitir que se expanda horizontalmente
         satellite_box.set_margin_end(10)   # Margen izquierdo
-        satellite_box.set_size_request(300, -1) 
- 
+        satellite_box.set_size_request(300, -1)
 
         # Crear un Box Vertical para MODELO
         model_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -54,7 +37,6 @@ class Models(Gtk.Application):
 
         select_box.append(satellite_box)
         select_box.append(model_box)
-
 
     # CONTENIDO PARA SATELITE
         # Titulo
@@ -80,7 +62,7 @@ class Models(Gtk.Application):
         svg_square=Gdk.Texture.new_from_file(file_svg_square)
         # Crear una imagen con la textura SVG
         image_square = Gtk.Image.new_from_paintable(svg_square)
-        image_square.set_pixel_size(50) 
+        image_square.set_pixel_size(50)
         # Bloque de contenido para el boton SQUARE
         content_square = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         content_square.set_halign(Gtk.Align.CENTER)
@@ -102,7 +84,7 @@ class Models(Gtk.Application):
         svg_triangle=Gdk.Texture.new_from_file(file_svg_triangle)
         # Crear una imagen con la textura SVG
         image_triangle = Gtk.Image.new_from_paintable(svg_triangle)
-        image_triangle.set_pixel_size(50) 
+        image_triangle.set_pixel_size(50)
         # Bloque de contenido para el boton SQUARE
         content_triangle = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         content_triangle.set_halign(Gtk.Align.CENTER)
@@ -124,6 +106,10 @@ class Models(Gtk.Application):
 
         # Agregar clases
         square_satellite.set_css_classes(["button"])
+        square_satellite.get_style_context().add_class("selected")  # Seleccionado por defecto
+        # Imprimir en consola que el primer botón está seleccionado por defecto
+        on_button_clicked_satellite(None, square_satellite, triangle_satellite, 'Satelite 1')  # Llamada inicial
+        
         triangle_satellite.set_css_classes(["button"])
 
         # Conectar señales de clic a los botones
@@ -132,7 +118,6 @@ class Models(Gtk.Application):
 
         button_satellite.append(square_satellite)
         button_satellite.append(triangle_satellite)
-
 
     # CONTENIDO PARA MODELO
         # Titulo
@@ -144,7 +129,6 @@ class Models(Gtk.Application):
 
         text_model.append(label_model)
         model_box.append(text_model)
-
 
         # Botones
         button_model = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -159,7 +143,7 @@ class Models(Gtk.Application):
         svg_circle=Gdk.Texture.new_from_file(file_svg_circle)
         # Crear una imagen con la textura SVG
         image_circle = Gtk.Image.new_from_paintable(svg_circle)
-        image_circle.set_pixel_size(50) 
+        image_circle.set_pixel_size(50)
         # Bloque de contenido para el boton CICRCLE
         content_circle = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         content_circle.set_halign(Gtk.Align.CENTER)
@@ -172,8 +156,6 @@ class Models(Gtk.Application):
         content_circle.append(label_circle1)
         content_circle.append(label_circle2)
         circle_model.set_child(content_circle)  # Agregar el contenido al botón
-     
-
 
         # BOTON MODELO STAR
         star_model = Gtk.Button()
@@ -183,7 +165,7 @@ class Models(Gtk.Application):
         svg_star=Gdk.Texture.new_from_file(file_svg_star)
         # Crear una imagen con la textura SVG
         image_star = Gtk.Image.new_from_paintable(svg_star)
-        image_star.set_pixel_size(50) 
+        image_star.set_pixel_size(50)
         # Bloque de contenido para el boton STAR
         content_star = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         content_star.set_halign(Gtk.Align.CENTER)
@@ -205,7 +187,7 @@ class Models(Gtk.Application):
         svg_diamond=Gdk.Texture.new_from_file(file_svg_diamond)
         # Crear una imagen con la textura SVG
         image_diamond = Gtk.Image.new_from_paintable(svg_diamond)
-        image_diamond.set_pixel_size(50) 
+        image_diamond.set_pixel_size(50)
         # Bloque de contenido para el boton DIAMOND
         content_diamond = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         content_diamond.set_halign(Gtk.Align.CENTER)
@@ -218,7 +200,6 @@ class Models(Gtk.Application):
         content_diamond.append(label_diamond1)
         content_diamond.append(label_diamond2)
         diamond_model.set_child(content_diamond)  # Agregar el contenido al botón
-    
 
         # Hacer que ocupe todo el espacio disponible
         circle_model.set_hexpand(True)
@@ -230,6 +211,10 @@ class Models(Gtk.Application):
 
         # Agregar clases
         circle_model.set_css_classes(["button"])
+        circle_model.get_style_context().add_class("selected")  # Seleccionado por defecto
+        on_button_clicked_model(None,circle_model, star_model,diamond_model, 'Modelo 1')
+
+
         star_model.set_css_classes(["button"])
         diamond_model.set_css_classes(["button"])
 
@@ -260,7 +245,8 @@ class Models(Gtk.Application):
         back_button.set_child(back_box)
 
         next_button=  Gtk.Button()
-        next_button.connect("clicked", Methods(self).on_next_button_clicked, window)
+        # next_button.connect("clicked", Methods(self).on_next_button_clicked, window)
+        next_button.connect("clicked", on_next_button_clicked)
         # Crear un contenedor horizontal para el ícono y el texto
         next_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         next_box.set_margin_start(10)     # Margen derecho
@@ -289,16 +275,8 @@ class Models(Gtk.Application):
         button_box.append(next_button)
         button_box.set_margin_top(15)
 
-        
-        
 
         # Aplicar estilos personalizados desde un archivo CSS
         apply_css()
-        # Mostrar la ventana
-        window.present()
 
-    
-
-# Crear y ejecutar la aplicación
-app = Models()
-app.run()
+        return main_box
