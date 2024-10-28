@@ -2,6 +2,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GdkPixbuf
 from utils.methods import apply_css, on_image_button_clicked
+from modules import earth_images, suggestions
 
 def select_place(on_previous_button_clicked):
          # Crear un Box vertical PRINCIPAL
@@ -81,7 +82,12 @@ def select_place(on_previous_button_clicked):
         def mostrar_nombres():
 
             texto = entry.get_text()
-            print(f"Buscando nombres que contengan: {texto}")
+            places = suggestions.get_suggested_places(texto)
+
+            for index, place in enumerate(places):
+                print(place, index)
+                imagenes[index] = Imagen(place, "images/seleccione.jpg")
+
             # Inicializar child al primer hijo de result
             child = result_box.get_first_child()
             
