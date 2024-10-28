@@ -14,7 +14,7 @@ def get_suggested_places(query):
         'key': API_KEY,
         'q': query,
         'format': 'json',
-        'limit': 20
+        'limit': 10
     }
 
     try:
@@ -50,3 +50,23 @@ def select_suggested_places(suggestions, index):
                 print("Fuera de rango")
         except ValueError:
             print("Ingresa un número válido")
+
+
+def get_places_with_coordinates(query):
+    suggestions = get_suggested_places(query)
+    geolocator = Nominatim(user_agent="pachamama_project")
+    
+    places_with_coordinates = []
+
+    if suggestions:
+        for place in suggestions:
+            location = geolocator.geocode(place)
+            if location:
+                places_with_coordinates.append({
+                    'name': place,
+                    'coordinates': (location.latitude, location.longitude)
+                })
+            else:
+                print(f"No se encontraron coordenadas para {place}.")
+
+    return places_with_coordinates

@@ -4,7 +4,6 @@ gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
 
 
-
 # Importar las pantallas desde los archivos
 from screens.models import models
 from screens.select_place import select_place
