@@ -1,7 +1,8 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gio, Gdk,GdkPixbuf
-
+import requests
+import tempfile
 def apply_css():
         # Cargar el archivo CSS
         css_provider = Gtk.CssProvider()
@@ -63,16 +64,41 @@ def mostrar_imagen(image_box, ruta_imagen):
         image_box.remove(child)
         child = image_box.get_first_child()  # Actualizar al nuevo primer hijo después de la eliminación
 
-    # Cargar la nueva imagen correspondiente
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
-    image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
-    image_widget.set_hexpand(True)
-    image_widget.set_css_classes(["imagen_resultado"])
+    image_widget = None  # Inicializa `image_widget` por defecto
 
+    # Cargar la imagen desde una URL remota o desde una ruta local
+   
+    if ruta_imagen.startswith("http"):
+            # Descargar la imagen desde una URL remota
+            response = requests.get(ruta_imagen)
+            response.raise_for_status()  # Lanza un error si la descarga falla
 
-    # Agregar la nueva imagen al image_box
-    image_box.append(image_widget)
-    image_box.show()
+            # Guardar la imagen en un archivo temporal
+            with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                tmp_file.write(response.content)
+                tmp_file_path = tmp_file.name
+
+            # Cargar la imagen desde el archivo temporal
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(tmp_file_path)
+            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
+            image_widget.set_hexpand(True)
+            image_widget.set_css_classes(["imagen_resultado"])
+    else:
+            
+            # Cargar la imagen desde una ruta local
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
+
+        # Crear el widget de la imagen y configurar
+            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
+            image_widget.set_hexpand(True)
+            image_widget.set_css_classes(["imagen_resultado"])
+
+   
+
+    # Agregar el widget de la imagen al `image_box`
+    if image_widget:
+        image_box.append(image_widget)
+        image_box.show()
 
     return image_widget  # Devolver el widget para ser reutilizado
 

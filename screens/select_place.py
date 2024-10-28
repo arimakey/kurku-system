@@ -67,7 +67,7 @@ def select_place(on_previous_button_clicked):
                     self.ruta = ruta
         # Crear una lista de objetos Imagen
         imagenes = [
-            Imagen("Imagen 1", "images/seleccione.jpg"),
+            Imagen("Imagen 1", "https://earthengine.googleapis.com/v1/projects/prueba-imagen-satelital/thumbnails/467042e606a40d44549bfcbf5cd19e6c-483cfd6fcb1261c900f6b93dd69497a7:getPixels"),
             Imagen("Imagen 2", "images/seleccione.jpg"),
             Imagen("Imagen 3", "images/seleccione.jpg"),
             Imagen("Imagen 4", "images/seleccione.jpg"),
