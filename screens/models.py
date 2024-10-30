@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk, Gio
 from utils.methods import apply_css, on_button_clicked_satellite, on_button_clicked_model
 
     # Crear un Box vertical PRINCIPAL
-def models(on_next_button_clicked):
+def models(change_screen):
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         main_box.set_margin_top(10)    # Margen superior
         main_box.set_margin_bottom(10)  # Margen inferior
@@ -26,14 +26,15 @@ def models(on_next_button_clicked):
 
         # Crear un Box Vertical para SATELITE
         satellite_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        satellite_box.set_hexpand(False)  # Permitir que se expanda horizontalmente
+        satellite_box.set_hexpand(True)  # Permitir que se expanda horizontalmente
         satellite_box.set_margin_end(10)   # Margen izquierdo
-        satellite_box.set_size_request(300, -1)
+        satellite_box.set_size_request(200, -1)
 
         # Crear un Box Vertical para MODELO
         model_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         model_box.set_hexpand(True)  # Permitir que se expanda horizontalmente
         model_box.set_margin_start(10)     # Margen derecho
+        model_box.set_size_request(300,-1)
 
         select_box.append(satellite_box)
         select_box.append(model_box)
@@ -229,7 +230,9 @@ def models(on_next_button_clicked):
 
 
     # CONTENIDO PARA ANTERIOR Y SIGUIENTE
-        back_button=  Gtk.Button()
+        back_button = Gtk.Button()
+        back_button.connect("clicked", lambda x: change_screen("main_screen"))
+        
         # Crear un contenedor horizontal para el ícono y el texto
         back_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         back_box.set_margin_start(10)     # Margen derecho
@@ -244,9 +247,9 @@ def models(on_next_button_clicked):
         # Agregar el contenedor al botón
         back_button.set_child(back_box)
 
-        next_button=  Gtk.Button()
-        # next_button.connect("clicked", Methods(self).on_next_button_clicked, window)
-        next_button.connect("clicked", on_next_button_clicked)
+        next_button = Gtk.Button()
+        # next_button.connect("clicked", Methods(self).change_screen, window)
+        next_button.connect("clicked", lambda x: change_screen("select_place"))
         # Crear un contenedor horizontal para el ícono y el texto
         next_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         next_box.set_margin_start(10)     # Margen derecho

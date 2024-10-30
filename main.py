@@ -3,13 +3,13 @@ gi.require_version("Gtk", "4.0")
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
 
-
 # Importar las pantallas desde los archivos
 from screens.models import models
 from screens.select_place import select_place
+from screens.create_project import create_project
 from utils.methods import apply_css
-
 class MainWindow(Gtk.ApplicationWindow):
+   
     def __init__(self, app):
         super().__init__(application=app)
         self.set_title("Kurku")
@@ -44,29 +44,22 @@ class MainWindow(Gtk.ApplicationWindow):
         self.create_and_add_screens()
 
     def create_and_add_screens(self):
-        # Crear las pantallas importadas y agregar al Stack
-        screen1 = models(self.on_next_button_clicked)
-        screen2 = select_place(self.on_previous_button_clicked)
+        main_screen = create_project(self.change_screen)
+        options_screen = models(self.change_screen)
+        place_screen = select_place(self.change_screen)
         
-        # Agregar pantallas al Stack con nombres para referencia, pero sin mostrar los títulos
-        self.stack.add_named(screen1, "screen1")
-        self.stack.add_named(screen2, "screen2")
+        self.stack.add_named(main_screen, "main_screen")
+        self.stack.add_named(options_screen, "project_options")
+        self.stack.add_named(place_screen, "select_place")
 
-    def on_next_button_clicked(self, button):
-        # Cambia a la siguiente pantalla (Pantalla 2)
-        self.stack.set_visible_child_name("screen2")
-
-    def on_previous_button_clicked(self, button):
-        # Cambia a la pantalla anterior (Pantalla 1)
-        self.stack.set_visible_child_name("screen1")
-
-
+    def change_screen(self, screen):
+        self.stack.set_visible_child_name(screen)
+        
 class MainApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="com.models")
         
     def do_activate(self):
-        # Crear la ventana principal y mostrarla
         win = MainWindow(self)
         win.present()
 

@@ -4,7 +4,7 @@ from gi.repository import Gtk, GdkPixbuf
 from utils.methods import apply_css, on_image_button_clicked
 from modules import earth_images, suggestions
 
-def select_place(on_previous_button_clicked):
+def select_place(change_screen):
          # Crear un Box vertical PRINCIPAL
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         main_box.set_margin_top(10)    # Margen superior
@@ -174,7 +174,7 @@ def select_place(on_previous_button_clicked):
     
      # CONTENIDO PARA ANTERIOR Y SIGUIENTE
         back_button=  Gtk.Button()
-        back_button.connect("clicked", on_previous_button_clicked)
+        back_button.connect("clicked", lambda x: change_screen("project_options"))
         # Crear un contenedor horizontal para el ícono y el texto
         back_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         back_box.set_margin_start(10)     # Margen derecho
@@ -222,7 +222,4 @@ def select_place(on_previous_button_clicked):
     
         return main_box
 
-            
-        
 
-        

@@ -2,7 +2,7 @@ import requests
 import geopy
 from geopy.geocoders import Nominatim
 
-# LocationIQ API key
+# LocationIQ API keyS
 API_KEY = 'pk.ce50a5663503058cf13001062b0db6a7'
 
 def get_suggested_places(query):
