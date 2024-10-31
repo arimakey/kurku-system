@@ -1,6 +1,7 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gio, Gdk,GdkPixbuf
+from modules import suggestions, earth_images
 import requests
 import tempfile
 
@@ -49,12 +50,12 @@ def on_button_clicked_model(self, button_selected, other_button1, other_button2,
             other_button2.get_style_context().remove_class("selected")
 
 
-def on_image_button_clicked(button, image_box, ruta_imagen):
-    """
-    Llama a la función para mostrar la imagen en el contenedor `image_box`.
-    """
-    mostrar_imagen(image_box, ruta_imagen)
-
+def on_image_button_clicked(image_box, selected, places):
+    x, y = suggestions.select_suggested_places(places, selected)
+    print(x, y)
+    image_url = earth_images.get_image(x, y)
+    mostrar_imagen(image_box, image_url)
+    
 def mostrar_imagen(image_box, ruta_imagen):
     """
     Muestra la imagen en el contenedor `image_box`, reemplazando cualquier imagen anterior.
@@ -101,5 +102,4 @@ def mostrar_imagen(image_box, ruta_imagen):
         image_box.append(image_widget)
         image_box.show()
 
-    return image_widget  # Devolver el widget para ser reutilizado
-
+    return image_widget

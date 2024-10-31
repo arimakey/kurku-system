@@ -1,17 +1,12 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GdkPixbuf
-from utils.methods import apply_css, on_image_button_clicked
+from utils.methods import on_image_button_clicked
 from modules import earth_images, suggestions
 
 def select_place(change_screen):
-         # Crear un Box vertical PRINCIPAL
+        # Crear un Box vertical PRINCIPAL
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        main_box.set_margin_top(10)    # Margen superior
-        main_box.set_margin_bottom(10)  # Margen inferior
-        main_box.set_margin_start(10)   # Margen izquierdo
-        main_box.set_margin_end(10)     # Margen derecho
-        # self.set_child(main_box)
 
         # Crear un Box horizontal para el buscador
         search_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
@@ -38,12 +33,12 @@ def select_place(change_screen):
         entry = Gtk.Entry()
         entry.set_placeholder_text("Nombre")  # Texto de sugerencia
         search_box.append(entry)
-        entry.set_css_classes(["buscador"])  # Agregar una clase CSS
+        entry.set_css_classes(["search-bar"])  # Agregar una clase CSS
         entry.set_hexpand(True)
 
         # Crear un BOTON DE BUSQUEDA
         search_button=  Gtk.Button()
-        search_button.set_css_classes(["buscador_boton"])  # Agregar una clase CSS 
+        search_button.set_css_classes(["btn_primary"])  # Agregar una clase CSS 
         # Crear un contenedor horizontal para el ícono y el texto
         search_content= Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         search_content.set_margin_start(10)     # Margen derecho
@@ -57,37 +52,19 @@ def select_place(change_screen):
         search_content.append(label_search)
         # Agregar el contenedor al botón
         search_button.set_child(search_content)
-
         search_box.append(search_button)
-      
-    # RESULTADOS E IMAGEN
-        
+            
         class Imagen:
                 def __init__(self, nombre, ruta):
                     self.nombre = nombre
                     self.ruta = ruta
         # Crear una lista de objetos Imagen
-        imagenes = [
-            Imagen("Imagen 1", "https://earthengine.googleapis.com/v1/projects/prueba-imagen-satelital/thumbnails/467042e606a40d44549bfcbf5cd19e6c-483cfd6fcb1261c900f6b93dd69497a7:getPixels"),
-            Imagen("Imagen 2", "images/seleccione.jpg"),
-            Imagen("Imagen 3", "images/seleccione.jpg"),
-            Imagen("Imagen 4", "images/seleccione.jpg"),
-            Imagen("Imagen 5", "images/seleccione.jpg"),
-            Imagen("Imagen 1", "images/seleccione.jpg"),
-            Imagen("Imagen 2", "images/seleccione.jpg"),
-            Imagen("Imagen 3", "images/seleccione.jpg"),
-            Imagen("Imagen 4", "images/seleccione.jpg"),
-            Imagen("Imagen 5", "images/seleccione.jpg")
-        ]
+        places = []
+        
         def mostrar_nombres():
-
             texto = entry.get_text()
             places = suggestions.get_suggested_places(texto)
-
-            for index, place in enumerate(places):
-                print(place, index)
-                imagenes[index] = Imagen(place, "images/seleccione.jpg")
-
+            
             # Inicializar child al primer hijo de result
             child = result_box.get_first_child()
             
@@ -96,8 +73,8 @@ def select_place(change_screen):
             while child is not None:
                 result_box.remove(child)
                 child = result_box.get_first_child()
-                
-             # RESULTADOS
+            
+            # RESULTADOS
             #Crear un contenedor de resultados
             result = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
             # result.set_size_request(300, -1)
@@ -139,25 +116,22 @@ def select_place(change_screen):
             image_box.set_vexpand(True)
             result_box.append(image_box)
 
-            # Agregar cada nombre como un label en el área de resultados
-            for imagen in imagenes:
+            for index, place in enumerate(places):
                 # Crear un botón para cada imagen
                 button = Gtk.Button()
-                button.set_margin_start(10)  # Margen izquierdo
-                button.set_margin_end(10)    # Margen derecho
+                button.set_margin_start(10)
+                button.set_margin_end(10)
                 button.set_css_classes(["lista_resultados"])  # Agregar una clase CSS
                 button.set_hexpand(True)
-                # Conectar el evento "clicked" al método para mostrar la imagen
-                # Usar lambda para pasar argumentos adicionales
-                button.connect("clicked", lambda btn, ruta=imagen.ruta: on_image_button_clicked(btn, image_box, ruta))  # Pasar el contenedor de imagen y la imagen actual
-                # Crear una etiqueta con el nombre de la imagen
-                label = Gtk.Label(label=imagen.nombre)
-                label.set_margin_top(6)  # Margen superior
-                label.set_margin_bottom(6)  # Margen inferior
+                
+                button.connect("clicked", lambda btn, selected=index: on_image_button_clicked(image_box, selected, places))  # Pasar el contenedor de imagen y la imagen actual
+                
+                label = Gtk.Label(label=place)
+                label.set_margin_top(6)
+                label.set_margin_bottom(6)
                 button.set_child(label)
                 scrolled_result.append(button)
-            #Mostrar imagen por defecto //Seleccione un opcion
-            
+                
             # Cargar la nueva imagen correspondiente
             pixbuf = GdkPixbuf.Pixbuf.new_from_file("images/seleccione.jpg")
             image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
@@ -169,8 +143,7 @@ def select_place(change_screen):
             image_box.append(image_widget)
             image_box.show()
 
-          # Conectar el botón de búsqueda para mostrar los nombres
-        search_button.connect("clicked", lambda btn: mostrar_nombres())
+        search_button.connect("clicked", lambda x: mostrar_nombres())
     
      # CONTENIDO PARA ANTERIOR Y SIGUIENTE
         back_button=  Gtk.Button()
@@ -205,8 +178,8 @@ def select_place(change_screen):
         next_button.set_child(next_box)
 
          # Agregar clases
-        back_button.set_css_classes(["button"])
-        next_button.set_css_classes(["button"])
+        back_button.set_css_classes(["btn_primary"])
+        next_button.set_css_classes(["btn_primary"])
 
         button_box.append(back_button)
 
@@ -218,8 +191,6 @@ def select_place(change_screen):
         button_box.append(next_button)
         button_box.set_margin_top(15)
 
-        apply_css()
-    
         return main_box
 
 

@@ -52,7 +52,7 @@ def get_image(longitud, latitud):
     imagenes = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
         .filterBounds(roi) \
         .filterDate('2017-03-28', '2024-09-28') \
-        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 5))  # Filtrar por nubes
+        .filterMetadata('CLOUDY_PIXEL_PERCENTAGE','less_than', 10)
 
     imagen = imagenes.median()
 

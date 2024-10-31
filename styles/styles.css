@@ -1,24 +1,22 @@
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+window {
+    background-color: #1F1F1F; /* Cambia este código de color al que desees */
 }
 
 headerbar {
-    background: #303030;  /* Color de fondo */
-    color: #979796;               /* Color del texto */
-    min-height: 5px; 
-    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
-    font-weight: bold;          /* Hacer el texto en negrita */
-    font-size: 14px;           /* Tamaño de la fuente */
+    background: #303030;
+    color: #a5a5a4;
+    min-height: 5px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 headerbar button {
-    color: #D9D9D9;  /* Color del texto de los botones */
+    color: #636463;
 }
 
-window {
-    background-color: #1F1F1F; /* Cambia este código de color al que desees */
+headerbar button:hover{
+    color: #D9D9D9;
 }
 
 .tittle-label {
@@ -36,12 +34,12 @@ window {
     padding: 5px; 
     font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
 }
+
 .button{
     background: #303030;  /* Color de fondo */
     color: #D9D9D9;   
     border: none; /* Eliminar el borde */
     border-radius: 10px; /* Cuanto mayor sea el valor, más redondeado será el botón */
-    box-sizing: border-box;
 }
 .button:hover {
     background: #636463; /* Color al pasar el mouse */
@@ -52,22 +50,37 @@ window {
     border: 1.5px solid #D9D9D9; /* Borde: grosor, estilo y color */
 }
 
-.buscador {
-    background: #1F1F1F; /* Color de fondo */
-    color: #A5A5A4; /* Color del texto */
-    border: 1.0px solid #A5A5A4;  /*Borde: grosor, estilo y color */
+.search-bar {
+    background: #1F1F1F;
+    color: #A5A5A4;
+    border: 1.0px solid #A5A5A4;
     border-radius: 10px;
 }
 
-.buscador_boton {
-    background: #303030; /* Color de fondo */
-    color: #FFFFFF; /* Color del texto */
+.btn_primary {
+    background: #303030;
+    color: #A5A5A4;
     border-radius: 10px;
-    border: none; /* Eliminar el borde */
+    border: 1.5px solid #303030;
 }
+
+.btn_primary:hover {
+    background: #303030;
+    color: #EEEEEC;
+    border-radius: 10px;
+    border: 1.5px solid #EEEEEC;
+}
+
+.projects_container {
+    background-color: #353535;  
+    border-radius: 10px;
+    padding: 10px; 
+}
+
 .lista_resultados:hover {
     background: #636463; /* Color al pasar el mouse */
 }
+
 .lista_resultados.selected {
     /* background: #636463;  */
     border: 1.5px solid #D9D9D9; /* Borde: grosor, estilo y color */
@@ -79,6 +92,7 @@ window {
     border: none;  /*Borde: grosor, estilo y color */
     border-radius: 10px;
 }
+
 .box_result {
     background: #303030; /* Color de fondo */
     border: none;  /*Borde: grosor, estilo y color */
@@ -99,39 +113,6 @@ window {
 
 
 
-.container {
-    background-color: #1f1f1f;  
-}
-
-.container2 {
-    background-color: #353535;  
-    border-radius: 10px;   
-    padding-right: 20px;  
-}
-
-headerbar {
-    background: #303030;
-    color: #a5a5a4;
-    min-height: 5px;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-headerbar button {
-    color: #D9D9D9;
-    box-sizing: border-box;
-}
-
-headerbar button:hover{
-    color: #1f1f1f;
-}
-entry {
-    border-radius: 10px;
-    background: #1f1f1f; 
-    color: #a5a5a4;
-}
-
 button.custom-btn{
     background: #353535; 
     border-radius: 10px;
@@ -150,22 +131,19 @@ button.custom-btn:hover, button.custom-btn:active, button.custom-btn:checked, bu
     font-size: 15px;
     color: #FFFFFF;                         
 }   
-
-.custom-search-bar{
-    padding-left: 10px;  /* Espacio a la izquierda del texto */   
-}                 
+       
 
 .active-card {
     background-color: #1f1f1f;
     border-radius:10px;
     padding: 10px;
-    color:white    
+    color:white;    
 }
 .inactive-card {
     background-color: #1f1f1f;
     border-radius:10px;
     padding: 10px;
-    color:white    
+    color:white;    
 }
                         
 .custom-name-lb {
@@ -190,17 +168,4 @@ button.custom-btn:hover, button.custom-btn:active, button.custom-btn:checked, bu
 
 entry{
     border-radius: 10px;
-}
-
-.custom-btn2{
-    background: #353535; 
-    border-radius: 10px;
-    padding-left: 25px;
-    padding-right: 25px;   
-    color: white;    
-}
-
-button.custom-btn:hover, button.custom-btn:active, button.custom-btn:checked, button.custom-btn:focus{
-    background-color: #454545;
-    border: 1px solid #aaaaaa;                                                                
 }
