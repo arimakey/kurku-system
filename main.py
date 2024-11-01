@@ -8,6 +8,8 @@ from views.models import models
 from views.select_place import select_place
 from views.create_project import create_project
 from utils.methods import apply_css
+from data.locations import locations
+
 class MainWindow(Gtk.ApplicationWindow):
     title = "Kurku"
     
@@ -40,7 +42,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.create_and_add_screens()
 
     def create_and_add_screens(self):
-        main_screen = create_project(self.change_screen)
+        main_screen = create_project(self.change_screen, locations)
         options_screen = models(self.change_screen)
         place_screen = select_place(self.change_screen)
         

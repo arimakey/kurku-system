@@ -4,47 +4,17 @@ from gi.repository import Gtk, Gdk, Pango
 
 selected_file_path = None
 
-def create_project(change_screen):
-    #Creacion de containers
-    
+def create_project(change_screen, locations):
     main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+    
     header_section = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
     projects_section = Gtk.ScrolledWindow()
-
-    #Añadir clases a container
     
-    #Variables
-    locations = [
-        Location("Trujillo", True, "35° 41' 22'' N ", r".\images\prueba.png"),
-        Location("Amazonas", True, "36° 41' 22'' N", r".\images\prueba.png"),
-        Location("Ucayali", False, "37° 41' 22'' N", r".\images\prueba.png"),
-        Location("Trujillo", True, "35° 41' 22'' N ", r".\images\prueba.png"),
-        Location("Amazonas", False, "36° 41' 22'' N", r".\images\prueba.png"),
-        Location("Amazonas", True, "36° 41' 22'' N", r".\images\prueba.png"),
-        Location("Ucayali", False, "37° 41' 22'' N", r".\images\prueba.png"),
-        Location("Trujillo", True, "35° 41' 22'' N ", r".\images\prueba.png"),
-    ]
-    
-    #Crear contenedor adicional
-    container_wrapper = Gtk.FlowBox()
-    container_wrapper.set_row_spacing(8)
-    container_wrapper.set_column_spacing(8)
-    container_wrapper.set_valign(Gtk.Align.START)
-    container_wrapper.set_max_children_per_line(0)
-    container_wrapper.set_selection_mode(Gtk.SelectionMode.NONE)
+    projects = load_projects(locations)
 
-    container_wrapper.get_style_context().add_class("projects_container")
-
-    #Bucle para colocar los cards
-    for i,location in enumerate(locations):
-        card = LocationCard(location)
-        container_wrapper.append(card)
-
-    #Agregar scrollbar al contenedor wrapper
     projects_section.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC) 
-    projects_section.set_child(container_wrapper)
+    projects_section.set_child(projects)
     
-    #Configuracion de containers
     projects_section.set_hexpand(True)
     projects_section.set_vexpand(True)
     header_section.set_halign(Gtk.Align.FILL)
@@ -60,8 +30,21 @@ def create_project(change_screen):
 
     return main_container
 
-def load_projects():
-    return
+def load_projects(locations):
+    container_wrapper = Gtk.FlowBox()
+    container_wrapper.set_row_spacing(8)
+    container_wrapper.set_column_spacing(8)
+    container_wrapper.set_valign(Gtk.Align.START)
+    container_wrapper.set_max_children_per_line(0)
+    container_wrapper.set_selection_mode(Gtk.SelectionMode.NONE)
+    
+    container_wrapper.get_style_context().add_class("projects_container")
+
+    for i,location in enumerate(locations):
+        card = LocationCard(location)
+        container_wrapper.append(card)
+    
+    return container_wrapper
 
 def create_file_button():
     file_button=Gtk.Button()
@@ -73,7 +56,7 @@ def create_file_button():
     file_button.get_style_context().add_class("btn_primary")
     return file_button
 
-def on_file_button_clicked(button):
+def on_file_button_clicked():
     dialog = Gtk.FileChooserNative(
         title="Select a File",
         action = Gtk.FileChooserAction.OPEN
@@ -111,13 +94,6 @@ def create_search_bar():
     search_bar.set_icon_from_icon_name(Gtk.EntryIconPosition.PRIMARY, "system-search-symbolic")
     search_bar.get_style_context().add_class("search-bar")
     return search_bar
-
-class Location:
-    def __init__ (self, name, state, coordinates, image):
-        self.name = name
-        self.state = state
-        self.coordinates = coordinates
-        self.image = image
 
 class LocationCard(Gtk.Box):
     def __init__(self, location):
