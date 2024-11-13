@@ -1,9 +1,10 @@
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, Gio, Gdk,GdkPixbuf
+from gi.repository import Gtk, Gio, Gdk,GdkPixbuf, GLib
 from modules import suggestions, earth_images
 import requests
 import tempfile
+import threading
 
 def apply_css():
         # Cargar el archivo CSS
@@ -55,51 +56,46 @@ def on_image_button_clicked(image_box, selected, places):
     print(x, y)
     image_url = earth_images.get_image(x, y)
     mostrar_imagen(image_box, image_url)
+
+
+#Modificaciones de la funcion para hacerla en un hilo separado
     
 def mostrar_imagen(image_box, ruta_imagen):
-    """
-    Muestra la imagen en el contenedor `image_box`, reemplazando cualquier imagen anterior.
-    """
-    # Eliminar cualquier imagen previa del image_box
+
+    def load_image(): 
+        image_widget = None
+        try: 
+            if ruta_imagen.startswith("http"):
+                response = requests.get(ruta_imagen)
+                response.raise_for_status()  # Lanza un error si la descarga falla
+                with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                    tmp_file.write(response.content)
+                    tmp_file_path = tmp_file.name
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(tmp_file_path)
+            else: 
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
+
+            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
+            image_widget.set_hexpand(True)
+            image_widget.set_css_classes(["imagen_resultado"])
+
+        except Exception as e: 
+             print(f"Error al cargar la imagen:", e)
+
+        # Usar GLib.idle_add para actualizar la interfaz en el hilo principal
+        if image_widget:
+            GLib.idle_add(update_image_box, image_box, image_widget)
+    
+    # Lanzar el hilo
+    threading.Thread(target=load_image, daemon=True).start()
+
+def update_image_box(image_box, image_widget):
     child = image_box.get_first_child()
     while child:
         image_box.remove(child)
-        child = image_box.get_first_child()  # Actualizar al nuevo primer hijo después de la eliminación
+        child = image_box.get_first_child()
 
-    image_widget = None  # Inicializa `image_widget` por defecto
+    # Añadir la nueva imagen y mostrarla
+    image_box.append(image_widget)
+    image_box.show()
 
-    # Cargar la imagen desde una URL remota o desde una ruta local
-   
-    if ruta_imagen.startswith("http"):
-            # Descargar la imagen desde una URL remota
-            response = requests.get(ruta_imagen)
-            response.raise_for_status()  # Lanza un error si la descarga falla
-
-            # Guardar la imagen en un archivo temporal
-            with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
-                tmp_file.write(response.content)
-                tmp_file_path = tmp_file.name
-
-            # Cargar la imagen desde el archivo temporal
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(tmp_file_path)
-            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
-            image_widget.set_hexpand(True)
-            image_widget.set_css_classes(["imagen_resultado"])
-    else:
-            
-            # Cargar la imagen desde una ruta local
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
-
-        # Crear el widget de la imagen y configurar
-            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
-            image_widget.set_hexpand(True)
-            image_widget.set_css_classes(["imagen_resultado"])
-
-   
-
-    # Agregar el widget de la imagen al `image_box`
-    if image_widget:
-        image_box.append(image_widget)
-        image_box.show()
-
-    return image_widget
