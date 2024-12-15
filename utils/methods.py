@@ -1,7 +1,9 @@
 import gi
+
+from test import earth_images
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gio, Gdk,GdkPixbuf, GLib
-from modules import suggestions, earth_images
+from modules import suggestions
 import requests
 import tempfile
 import threading

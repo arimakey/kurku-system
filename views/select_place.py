@@ -1,8 +1,10 @@
 import gi
+
+from test import earth_images
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, GdkPixbuf
 from utils.methods import on_image_button_clicked
-from modules import earth_images, suggestions
+from modules import suggestions
 from components.btn_direction import create_next_and_previous
 
 def select_place(change_screen):
