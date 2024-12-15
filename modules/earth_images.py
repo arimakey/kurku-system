@@ -1,8 +1,67 @@
 import ee
+import os
+import requests
 from modules import suggestions
 
 ee.Authenticate()
 ee.Initialize(project='prueba-imagen-satelital')
+
+def descargar_imagenes(longitud, latitud, fecha_inicio, fecha_fin, directorio='data/images'):
+    try:
+        ee.Initialize()
+        roi = ee.Geometry.Rectangle([longitud-0.03, latitud-0.03, longitud+0.03, latitud+0.03])
+        imagenes = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
+                    .filterBounds(roi) \
+                    .filterDate(fecha_inicio, fecha_fin) \
+                    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 5))
+
+        lista_imagenes = imagenes.toList(imagenes.size()).getInfo()
+
+        if not os.path.exists(directorio):
+            os.makedirs(directorio)
+
+        # Abrir archivo CSV una sola vez y escribir encabezados
+        with open(os.path.join(directorio, 'vegetation_data.csv'), 'w') as file:
+            file.write('fecha,vegetation_percentage\n')  # Escribir nombres de columnas
+
+        for imagen_info in lista_imagenes:
+            id_imagen = imagen_info['id']
+            imagen = ee.Image(id_imagen)
+
+            # Calcular NDVI
+            ndvi = imagen.normalizedDifference(['B8', 'B4']).rename('NDVI')
+            ndvi_image = ndvi.visualize(min=0, max=1, palette=['white', 'green'])
+            ndvi_url = ndvi_image.getDownloadURL({
+                'region': roi,
+                'scale': 10,
+                'format': 'jpg'
+            })
+
+            # Calcular el porcentaje de vegetación
+            vegetacion_mask = ndvi.gt(0.4)
+            porcentaje_vegetacion = vegetacion_mask.reduceRegion(
+                reducer=ee.Reducer.mean(),
+                geometry=roi,
+                scale=10
+            ).get('NDVI').getInfo() * 100  # Convertir la media en porcentaje
+
+            # Descargar la imagen NDVI
+            ndvi_response = requests.get(ndvi_url)
+            fecha = id_imagen.split('/')[-1]  # Asumiendo que el ID contiene la fecha al final
+            ndvi_filename = os.path.join(directorio, f'{fecha}_NDVI.jpg')
+            with open(ndvi_filename, 'wb') as f:
+                f.write(ndvi_response.content)
+
+            # Guardar información de vegetación en el archivo CSV
+            with open(os.path.join(directorio, 'vegetation_data.csv'), 'a') as file:
+                file.write(f"{fecha},{porcentaje_vegetacion}\n")
+
+    except ee.EEException as e:
+        print("Error al interactuar con Google Earth Engine:", e)
+    except requests.exceptions.RequestException as e:
+        print("Error al descargar la imagen:", e)
+    except Exception as e:
+        print("Ocurrió un error inesperado:", e)
 
 def obtener_urls_imagenes(longitud=-70.4967607, latitud=-12.0545491, fecha_inicio='2024-01-01', fecha_fin='2024-12-31'):
     """
@@ -105,10 +164,41 @@ def get_spectral_signature(longitud, latitud, fecha_inicio='2024-01-01', fecha_f
 
     return firma_espectral
 
-def calcular_porcentaje_vegetacion_y_url(longitud, latitud, fecha_inicio, fecha_fin):
-    # Inicializar la API de Google Earth Engine
-    ee.Initialize()
+def url_imagen_vegetacion_coloreada(longitud, latitud, fecha_inicio='2024-01-01', fecha_fin='2024-12-31'):
 
+    # Define la región de interés (ROI) como un rectángulo alrededor de las coordenadas dadas
+    roi = ee.Geometry.Rectangle([longitud - 0.03, latitud - 0.03, longitud + 0.03, latitud + 0.03])
+
+    # Filtra la colección de imágenes Sentinel-2 por la ROI, fechas y porcentaje de nubes
+    imagenes = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
+        .filterBounds(roi) \
+        .filterDate(fecha_inicio, fecha_fin) \
+        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 10))
+
+    # Utiliza la mediana de las imágenes para reducir el ruido y los efectos de las nubes
+    imagen = imagenes.median()
+
+    # Calcula el NDVI usando las bandas del infrarrojo cercano (NIR) y rojo (Red)
+    ndvi = imagen.normalizedDifference(['B8', 'B4']).rename('NDVI')
+
+    # Crear una máscara de vegetación donde el NDVI sea mayor que un umbral
+    vegetacion_mask = ndvi.gt(0.4)
+
+    # Aplicar la máscara de vegetación con color verde
+    imagen_coloreada = imagen.visualize(min=0, max=3000, bands=['B4', 'B3', 'B2']).blend(
+        ee.Image(1).visualize(palette=['green']).mask(vegetacion_mask)
+    )
+
+    # Genera y devuelve la URL de la imagen visualizada
+    url = imagen_coloreada.getThumbURL({
+        'region': roi,
+        'dimensions': 800,
+        'format': 'jpg'
+    })
+
+    return url
+
+def calcular_porcentaje_vegetacion_y_url(longitud, latitud, fecha_inicio, fecha_fin):
     # Definir la región de interés
     roi = ee.Geometry.Rectangle([longitud - 0.04, latitud - 0.04, longitud + 0.04, latitud + 0.04])
     
@@ -157,7 +247,6 @@ def calcular_porcentaje_vegetacion_y_url(longitud, latitud, fecha_inicio, fecha_
     })
     
     return porcentaje_vegetacion, url
-
 
 def get_place_info_with_image_and_signature(query):
     """
