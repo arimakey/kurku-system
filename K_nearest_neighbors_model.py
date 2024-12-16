@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 
-def K_nearest_neighbors(ruta):
+def K_nearest_neighbors(ruta,destino):
 
     data = pd.read_csv(ruta)
 
@@ -41,7 +41,7 @@ def K_nearest_neighbors(ruta):
         'vegetation_percentage_predicho': y_pred  # Porcentaje de vegetación predicho
     })
 
-    resultados.to_csv('data/proyecto_trujillo/model_results.csv', index=False)
+    resultados.to_csv(destino, index=False)
 
     return resultados
 

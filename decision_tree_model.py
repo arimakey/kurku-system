@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 
-def decision_tree(ruta):
+def decision_tree(ruta,destino):
     data = pd.read_csv(ruta)
 
     # Convertir la fecha en formato ordinal para manejar la temporalidad
@@ -40,6 +40,6 @@ def decision_tree(ruta):
         'vegetation_percentage_predicho': y_pred  # Porcentaje de vegetación predicho
     })
 
-    resultados.to_csv('data/proyecto_trujillo/model_results.csv', index=False)
+    resultados.to_csv(destino, index=False)
 
     return resultados

@@ -5,7 +5,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import joblib
 
-def random_forest(ruta):
+def random_forest(ruta,destino):
 
     data = pd.read_csv(ruta)
 
@@ -37,7 +37,7 @@ def random_forest(ruta):
         'vegetation_percentage_real': y_test,
         'vegetation_percentage_predicho': y_pred 
     })
-    resultados.to_csv('data/proyecto_trujillo/model_results.csv', index=False)
+    resultados.to_csv(destino, index=False)
 
     return resultados
 
