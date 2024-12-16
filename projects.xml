@@ -9,6 +9,6 @@
         <model>RandomForest</model>
         <longitude>-99.1332</longitude>
         <latitude>19.4326</latitude>
-        <analysis_route>/data/alpha_route</analysis_route>
+        <analysis_route>/data/proyecto_trujillo</analysis_route>
     </project>
 </projects>
