@@ -8,6 +8,10 @@ from views.select_models import select_models
 from views.select_place import select_place
 from utils.methods import apply_css
 from views.show_location import show_location  # Importar la vista para mostrar la ubicación
+from views.select_name import create_add_location_view
+import xml.etree.ElementTree as ET
+import tempfile
+import os
 
 class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
@@ -15,8 +19,24 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_title("Kurku")
         self.set_default_size(800, 600)
 
+        temp_dir = tempfile.mkdtemp()
+
+        # Inicializar datos del proyecto
+        self.project_data = {
+            'name': '',
+            'description': '',
+            'location': '',
+            'state': 'active',
+            'model': '',
+            'longitude': 0.0,
+            'latitude': 0.0,
+            'analysis_route': '',
+            'height': 600,
+            'width': 800
+        }
+
         # Cargar los proyectos desde el archivo XML
-        self.projects = load_projects_from_xml("projects.xml")  # Ruta al archivo XML
+        self.projects = load_projects_from_xml("projects.xml")
 
         # Crear una barra de herramientas (HeaderBar)
         header = Gtk.HeaderBar()
@@ -47,23 +67,55 @@ class MainWindow(Gtk.ApplicationWindow):
     def create_and_add_screens(self):
         # Crear las pantallas
         create_project_screen = create_project(self.change_screen, self.projects, self)
-        select_models_screen = select_models(self.change_screen)
-        select_place_screen = select_place(self.change_screen)
+        select_models_screen = select_models(self.change_screen, self.save_project_data)
+        select_place_screen = select_place(self.change_screen, self.save_project_data)
+        add_location_screen = create_add_location_view(self.change_screen, self.save_project_data, self.save_project_to_xml)
 
         # Añadir pantallas al stack
         self.stack.add_named(create_project_screen, "create_project")
         self.stack.add_named(select_models_screen, "select_models")
         self.stack.add_named(select_place_screen, "select_place")
+        self.stack.add_named(add_location_screen, "add_location_screen")
 
     def change_screen(self, screen_name, location_data=None):
         # Cambiar la pantalla visible en el stack
         if screen_name == "show_location" and location_data:
-            show_location_screen = show_location(self.change_screen, location_data)  # Crear la pantalla con datos
+            show_location_screen = show_location(self.change_screen, location_data)
             self.stack.add_named(show_location_screen, "show_location_screen")
             self.stack.set_visible_child_name("show_location_screen")
         else:
             self.stack.set_visible_child_name(screen_name)
 
+    def save_project_data(self, field, value):
+        print(field, value)
+        # Guardar los datos del proyecto
+        if field in self.project_data:
+            self.project_data[field] = value
+
+
+    def save_project_to_xml(self):
+        # Verificar si el archivo XML ya existe
+        if os.path.exists("projects.xml"):
+            # Cargar el archivo XML existente
+            tree = ET.parse("projects.xml")
+            root = tree.getroot()
+        else:
+            # Crear el elemento raíz si no existe el archivo
+            root = ET.Element("projects")
+            tree = ET.ElementTree(root)
+
+        # Crear un nuevo elemento de proyecto
+        project_element = ET.Element("project")
+
+        for key, value in self.project_data.items():
+            child = ET.SubElement(project_element, key)
+            child.text = str(value)
+
+        # Agregar el nuevo proyecto al árbol existente
+        root.append(project_element)
+
+        # Guardar el archivo XML actualizado
+        tree.write("projects.xml", encoding="utf-8", xml_declaration=True)
 class MainApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="com.kurku")

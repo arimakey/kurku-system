@@ -12,4 +12,16 @@
         <height>600</height>
         <width>800</width>
     </project>
+    <project>
+        <name>adsfasdfasdf</name>
+        <description>adfasdfasdfadf</description>
+        <location>Trujillo State, Venezuela</location>
+        <state>active</state>
+        <model>Modelo 1</model>
+        <longitude>9.49581285</longitude>
+        <latitude>-70.76889069529457</latitude>
+        <analysis_route />
+        <height>600</height>
+        <width>800</width>
+    </project>
 </projects>

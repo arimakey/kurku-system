@@ -1,12 +1,12 @@
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, GLib, GdkPixbuf
 from modules import earth_images, suggestions
 from components.btn_direction import create_next_and_previous
-from utils.methods import mostrar_imagen
+from utils.methods import mostrar_imagen, update_image_box
 import threading
 
-def select_place(change_screen):
+def select_place(change_screen, save_project_data):
     # Crear un Box vertical PRINCIPAL
     main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
@@ -20,7 +20,7 @@ def select_place(change_screen):
     result_box.set_vexpand(True)
     
     # Crear un Box Horizontal para los botones
-    button_box = create_next_and_previous(change_screen, "select_models", "select_models")
+    button_box = create_next_and_previous(change_screen, "select_models", "add_location_screen")
 
     # Agregar a main_box
     main_box.append(search_box)
@@ -107,7 +107,7 @@ def select_place(change_screen):
             button.set_margin_end(10)
             button.set_css_classes(["search-result-item"])
             button.set_hexpand(True)
-            button.connect("clicked", lambda btn, selected=index: on_image_button_clicked_async(image_box, selected, places))
+            button.connect("clicked", lambda btn, selected=index: on_image_button_clicked_async(image_box, selected, places, save_project_data))
             
             label = Gtk.Label(label=place)
             label.set_margin_top(6)
@@ -123,9 +123,11 @@ def select_place(change_screen):
             image_widget.set_hexpand(True)
             image_box.append(image_widget)
         except Exception as e:
+            # Si no existe la imagen, mostrar un mensaje de texto
             print(f"Error al cargar la imagen: {e}")
-            error_label = Gtk.Label(label="Imagen no encontrada")
-            image_box.append(error_label)
+            placeholder_label = Gtk.Label(label="Seleccione un lugar para cargar la imagen")
+            placeholder_label.set_css_classes(["placeholder-label"])
+            image_box.append(placeholder_label)
 
         # Mostrar el contenido
         result_box.show()
@@ -135,7 +137,9 @@ def select_place(change_screen):
 
     return main_box
 
-def on_image_button_clicked_async(image_box, selected, places):
+
+
+def on_image_button_clicked_async(image_box, selected, places, save_project_data):
     """
     Ejecuta la carga de imágenes de forma asincrónica para evitar bloquear la interfaz.
     """
@@ -143,10 +147,24 @@ def on_image_button_clicked_async(image_box, selected, places):
         try:
             # Obtener coordenadas en un hilo separado
             x, y = suggestions.select_suggested_places(places, selected)
+            
+            save_project_data('longitude', x)
+            save_project_data('latitude', y)
+            save_project_data('location', places[selected])
+            
+            # Mostrar "Cargando..." antes de empezar a cargar la imagen
+            mostrar_imagen(image_box, "loading")  # Usamos un marcador de estado de carga en lugar de una imagen
+
+            # Obtener la URL de la imagen
             image_url = earth_images.get_image(x, y)
-            mostrar_imagen(image_box, image_url)  # Usar la función mostrar_imagen para cargar y mostrar
+
+            # Mostrar la imagen cuando la carga haya terminado
+            mostrar_imagen(image_box, image_url)
+
         except Exception as e:
             print(f"Error al obtener la imagen: {e}")
+            # En caso de error, también podemos mostrar un mensaje de error
+            GLib.idle_add(update_image_box, image_box, Gtk.Label(label="Error al cargar la imagen"))
 
     # Crear un hilo para ejecutar la tarea de red
     threading.Thread(target=fetch_image, daemon=True).start()

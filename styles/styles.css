@@ -273,3 +273,51 @@ entry {
     color: #EEEEEE;
     transition: background-color 0.3s ease;
 }
+
+
+/* Entrada de texto (para nombre, descripción, etc.) */
+.input-field {
+    background-color: #303030;
+    color: #D9D9D9;
+    border-radius: 8px;
+    border: 1px solid #303030;
+    padding: 10px;
+}
+
+/* Etiquetas de texto */
+.title-label {
+    color: #D9D9D9;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+/* Botones */
+.button-primary {
+    background: #303030;
+    color: #A5A5A4;
+    border-radius: 8px;
+}
+
+.button-primary:hover {
+    background: #636463;
+    color: #EEEEEC;
+}
+
+
+
+
+/* Spinner personalizado */
+#custom-spinner {
+    color: white;  /* Color visible */
+    min-width: 40px;
+    min-height: 40px;
+}
+
+/* Texto de "Cargando..." */
+#loading-text {
+    font-size: 20px;
+    color: #FFFFFF;  /* Blanco */
+    font-weight: bold;
+    text-align: center;
+}

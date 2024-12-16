@@ -1,10 +1,10 @@
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk, Gio
-from utils.methods import apply_css, on_button_clicked_satellite, on_button_clicked_model
+from utils.methods import apply_css, on_button_clicked_satellite
 from components.btn_direction import create_next_and_previous
 
-def select_models(change_screen):
+def select_models(change_screen, save_project_data):
     main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
     select_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
@@ -81,20 +81,22 @@ def select_models(change_screen):
     diamond_model = create_option("SRT '1", "Modelo", "icons/Rectangle 93.svg")
     circle_model = create_option("SRT'2", "Modelo", "icons/Ellipse 9.svg")
 
+    # Asignar la clase 'selected' al primer modelo (por defecto)
     circle_model.get_style_context().add_class("selected")
 
-    circle_model.connect("clicked", on_button_clicked_model, circle_model, star_model, diamond_model, 'Modelo 1')
-    star_model.connect("clicked", on_button_clicked_model, star_model, diamond_model, circle_model, 'Modelo 2')
-    diamond_model.connect("clicked", on_button_clicked_model, diamond_model, circle_model, star_model, 'Modelo 3')
+    # Llamar a `save_project_data` para guardar el modelo por defecto
+    save_project_data('model', 'Modelo 1')
+
+    # Conectar señales de clic a los botones
+    circle_model.connect("clicked", on_button_clicked_model, circle_model, star_model, diamond_model, 'model', 'Modelo 1', save_project_data)
+    star_model.connect("clicked", on_button_clicked_model, star_model, diamond_model, circle_model, 'model', 'Modelo 2', save_project_data)
+    diamond_model.connect("clicked", on_button_clicked_model, diamond_model, circle_model, star_model, 'model', 'Modelo 3', save_project_data)
 
     button_model.append(circle_model)
     button_model.append(star_model)
     button_model.append(diamond_model)
 
     return main_box
-
-def create_section():
-    return
 
 def create_option(name_button, type_button, icon):
     option_button = Gtk.Button()
@@ -105,12 +107,14 @@ def create_option(name_button, type_button, icon):
     label_2 = Gtk.Label(label=type_button)
     label_2.set_css_classes(["title-label-item"])
 
+    # Cargar el archivo SVG para el icono
     file_svg = Gio.File.new_for_path(icon)
     svg = Gdk.Texture.new_from_file(file_svg)
 
     image = Gtk.Image.new_from_paintable(svg)
     image.set_pixel_size(50)
 
+    # Crear un contenedor para el contenido
     content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     content.set_halign(Gtk.Align.CENTER)
     content.set_valign(Gtk.Align.CENTER)
@@ -118,7 +122,22 @@ def create_option(name_button, type_button, icon):
     label_1.set_css_classes(["subtitle-label"])
     content.append(label_1)
     content.append(label_2)
+
+    # Asignar el contenido al botón
     option_button.set_child(content)
     option_button.set_css_classes(["button-item"])
 
     return option_button
+
+
+def on_button_clicked_model(self, button_selected, other_button1, other_button2, field, name_button, save_project_data):
+    # Mostrar el botón seleccionado en la consola
+    print(f"{name_button} seleccionado")
+    
+    # Cambiar el estilo de los botones (marcar el seleccionado)
+    button_selected.get_style_context().add_class("selected")
+    other_button1.get_style_context().remove_class("selected")
+    other_button2.get_style_context().remove_class("selected")
+
+    # Guardar los datos del proyecto al seleccionar un modelo
+    save_project_data(field, name_button)
