@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<projects>
+    <project>
+        <name>Proyecto Alpha</name>
+        <description>This is the first example project.</description>
+        <location>Mexico City</location>
+        <state>active</state>
+        <image>./image.jpg</image>
+        <model>RandomForest</model>
+        <longitude>-99.1332</longitude>
+        <latitude>19.4326</latitude>
+        <analysis_route>/analyses/alpha_route</analysis_route>
+    </project>
+    <project>
+        <name>Proyecto Beta</name>
+        <description>This is the second example project.</description>
+        <location>New York</location>
+        <state>inactive</state>
+        <image>./image.jpg</image>
+        <model>SVM</model>
+        <longitude>-74.0060</longitude>
+        <latitude>40.7128</latitude>
+        <analysis_route>/analyses/beta_route</analysis_route>
+    </project>
+    <project>
+        <name>Proyecto Gamma</name>
+        <description>This is the third example project.</description>
+        <location>London</location>
+        <state>active</state>
+        <image>./image.jpg</image>
+        <model>KNN</model>
+        <longitude>-0.1276</longitude>
+        <latitude>51.5074</latitude>
+        <analysis_route>/analyses/gamma_route</analysis_route>
+    </project>
+</projects>

@@ -50,52 +50,61 @@ def on_button_clicked_model(self, button_selected, other_button1, other_button2,
             other_button1.get_style_context().remove_class("selected")
             other_button2.get_style_context().remove_class("selected")
 
-
-def on_image_button_clicked(image_box, selected, places):
-    x, y = suggestions.select_suggested_places(places, selected)
-    print(x, y)
-    image_url = earth_images.get_image(x, y)
-    mostrar_imagen(image_box, image_url)
+import threading
+import requests
+import tempfile
+from gi.repository import Gtk, GdkPixbuf, GLib
 
 
-#Modificaciones de la funcion para hacerla en un hilo separado
-    
 def mostrar_imagen(image_box, ruta_imagen):
+    """
+    Carga una imagen desde una URL o archivo local de forma asincrónica y la muestra en image_box.
+    """
 
-    def load_image(): 
+    def load_image():
+        """
+        Carga la imagen en un hilo separado.
+        """
         image_widget = None
-        try: 
+        try:
+            # Si la ruta es una URL, descargar la imagen
             if ruta_imagen.startswith("http"):
                 response = requests.get(ruta_imagen)
-                response.raise_for_status()  # Lanza un error si la descarga falla
+                response.raise_for_status()  # Lanza un error si hay un problema en la descarga
                 with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
                     tmp_file.write(response.content)
                     tmp_file_path = tmp_file.name
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(tmp_file_path)
-            else: 
+            else:
+                # Si es un archivo local, cargarlo directamente
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(ruta_imagen)
 
+            # Crear un Gtk.Image desde el Pixbuf cargado
             image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
             image_widget.set_hexpand(True)
-            image_widget.set_css_classes(["imagen_resultado"])
+            image_widget.set_css_classes(["image-result"])
 
-        except Exception as e: 
-             print(f"Error al cargar la imagen:", e)
+        except Exception as e:
+            print(f"Error al cargar la imagen: {e}")
 
-        # Usar GLib.idle_add para actualizar la interfaz en el hilo principal
+        # Usar GLib.idle_add para actualizar la interfaz desde el hilo principal
         if image_widget:
             GLib.idle_add(update_image_box, image_box, image_widget)
-    
-    # Lanzar el hilo
+
+    # Lanzar la carga de la imagen en un hilo separado
     threading.Thread(target=load_image, daemon=True).start()
 
+
 def update_image_box(image_box, image_widget):
+    """
+    Actualiza el contenedor image_box con el nuevo Gtk.Image.
+    """
+    # Eliminar cualquier widget existente en el image_box
     child = image_box.get_first_child()
     while child:
         image_box.remove(child)
         child = image_box.get_first_child()
 
-    # Añadir la nueva imagen y mostrarla
+    # Agregar el nuevo widget con la imagen
     image_box.append(image_widget)
-    image_box.show()
-
+    image_box.show_all()

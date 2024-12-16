@@ -1,10 +1,12 @@
+/* General Window Style */
 window {
-    background-color: #1F1F1F; /* Cambia este código de color al que desees */
+    background-color: #1F1F1F; /* Main background color */
 }
 
+/* Header Bar Styling */
 headerbar {
     background: #303030;
-    color: #a5a5a4;
+    color: #A5A5A4;
     min-height: 5px;
     font-family: Arial, sans-serif;
     font-weight: bold;
@@ -15,154 +17,259 @@ headerbar button {
     color: #A5A5A4;
 }
 
-headerbar button:hover{
+headerbar button:hover {
     color: #D9D9D9;
 }
 
-.tittle-label {
-    color: #D9D9D9;             
-    font-size: 12px;         
-    font-weight: bold;        
-    /* padding: 5px;  */
-    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
-           
-}
-.tittle-label_{
-    color: #A5A5A4;             
-    font-size: 12px;         
-    font-weight: bold;        
-    padding: 5px; 
-    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
+/* Title Label Styles */
+.title-label {
+    color: #D9D9D9;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
 }
 
-.btn_item{
-    background: #303030;  /* Color de fondo */
-    color: #D9D9D9;   
-    border: none; /* Eliminar el borde */
-    border-radius: 10px; /* Cuanto mayor sea el valor, más redondeado será el botón */
-    border: 1.5px solid #303030; /* Borde: grosor, estilo y color */
-}
-.btn_item:hover {
-    background: #636463; /* Color al pasar el mouse */
-    border: 1.5px solid #636463; /* Borde: grosor, estilo y color */
+.title-label-item {
+    color: #D9D9D9;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
 }
 
-.btn_item.selected {
-    border: 1.5px solid #D9D9D9; /* Borde: grosor, estilo y color */
+.subtitle-label {
+    color: #A5A5A4;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 5px;
+    font-family: Arial, sans-serif;
 }
 
+/* Button Styles */
+.button-item {
+    background: #303030;
+    color: #D9D9D9;
+    border: none;
+    border-radius: 10px;
+    border: 1.5px solid #303030;
+}
+
+.button-item:hover {
+    background: #636463;
+    border: 1.5px solid #636463;
+}
+
+.button-item.selected {
+    border: 1.5px solid #D9D9D9;
+}
+
+/* Search Bar Styling */
 .search-bar {
     color: #A5A5A4;
     border-radius: 8px;
-    border: 1.0px solid #303030;
+    border: 1px solid #303030;
 }
 
-.btn_primary {
+/* Primary Button Styles */
+.button-primary {
     background: #303030;
     color: #A5A5A4;
     border-radius: 8px;
 }
 
-.btn_primary:hover {
+.button-primary:hover {
     background: #636463;
     color: #EEEEEC;
 }
 
-.projects_container {
-    background-color: #353535;  
-    border-radius: 8px;
-    padding: 10px; 
-}
-
-.lista_resultados:hover {
-    background: #636463; /* Color al pasar el mouse */
-}
-
-.lista_resultados.selected {
-    /* background: #636463;  */
-    border: 1.5px solid #D9D9D9; /* Borde: grosor, estilo y color */
-}
-
-.lista_resultados {
-    background: #1F1F1F; /* Color de fondo */
-    color: #D9D9D9; /* Color del texto */
-    border: none;  /*Borde: grosor, estilo y color */
+/* Project Container Styling */
+.project-container {
     border-radius: 8px;
 }
 
-.box_result {
-    background: #303030; /* Color de fondo */
-    border: none;  /*Borde: grosor, estilo y color */
+/* Search Results List */
+.search-result-item {
+    background: #1F1F1F;
+    color: #D9D9D9;
+    border: none;
     border-radius: 8px;
 }
-.label_result {
-    color: #D9D9D9;             
-    font-size: 12px;         
-    font-weight: bold;        
-    padding: 5px; 
-    font-family: Arial, sans-serif;  /* Cambia el tipo de letra */
+
+.search-result-item:hover {
+    background: #636463;
 }
 
-.imagen_resultado {
-    border-radius: 15px; /* Ajusta el valor para cambiar el radio del borde */
-    border: 1px solid #4285f4; /* Borde opcional */
+.search-result-item.selected {
+    border: 1.5px solid #D9D9D9;
 }
 
-
-
-button.custom-btn{
-    background: #353535; 
+/* Result Box Styling */
+.result-box {
+    background: #303030;
+    border: none;
     border-radius: 8px;
-    padding-left: 10px;
-    padding-right: 10px;
-    color: #a5a5a4;
+}
+
+.result-label {
+    color: #D9D9D9;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    font-family: Arial, sans-serif;
+}
+
+/* Image Result Styling */
+.image-result {
+    border-radius: 15px;
+    border: 1px solid #4285F4;
+}
+
+/* Custom Button Styles */
+.custom-button {
+    background: #353535;
+    border-radius: 8px;
+    padding: 0 10px;
+    color: #A5A5A4;
     border: none;
 }
 
-button.custom-btn:hover, button.custom-btn:active, button.custom-btn:checked, button.custom-btn:focus{
-    background: #454545;                                                       
+.custom-button:hover,
+.custom-button:active,
+.custom-button:checked,
+.custom-button:focus {
+    background: #454545;
 }
 
-
-.custom-lb {
+/* Custom Label Styles */
+.custom-label {
     font-size: 15px;
-    color: #FFFFFF;                         
-}   
-       
+    color: #FFFFFF;
+}
 
-.active-card {
-    background-color: #1f1f1f;
-    border-radius:10px;
-    padding: 10px;
-    color:white;    
-}
-.inactive-card {
-    background-color: #1f1f1f;
-    border-radius:10px;
-    padding: 10px;
-    color:white;    
-}
-                        
-.custom-name-lb {
-    color: #ffffff;
+/* Name and Coordinate Label Styles */
+.name-label,
+.coordinate-label {
+    color: #D9D9D9; /* Lighter text color for contrast */
     font-size: 16px;
-
-}
-                        
-.custom-coor-lb {
-    color: #ffffff;
-    font-size: 16px;           
+    font-weight: bold;
+    margin-bottom: 8px; /* Spacing between labels */
+    transition: color 0.3s ease; /* Smooth color transition for hover effect */
 }
 
-.container_data{
-    padding-bottom: 8px;
+/* Hover effect for labels */
+.active-card:hover .name-label,
+.active-card:hover .coordinate-label,
+.inactive-card:hover .name-label,
+.inactive-card:hover .coordinate-label {
+    color: #D9D9D9;  /* Same color, more subtle hover effect */
 }
 
-
-.bg-custom {
-    background-color: #1f1f1f;  
+/* Container Data Padding */
+.container-data {
+    padding-bottom: 8px;  /* Adjust padding for better layout */
 }
 
-entry{
+/* Icon style for the status */
+.status-icon {
+    border-radius: 50%;
+    background-color: #444;  /* Softer background for the status icon */
+}
+
+/* Background Customization */
+.background-custom {
+    background-color: #1F1F1F;
+}
+
+/* Entry Field Styling */
+entry {
     border-radius: 8px;
+}
+
+/* Button Click Animation */
+.button-clicked {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Scrolling Label Styling */
+.scrolling-label {
+    font-size: 14px;
+    color: #333;
+}
+
+
+/* Tarjetas */
+.active-card,
+.inactive-card {
+    background-color: #2A2A2A;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border: none;
+}
+
+.active-card:hover,
+.inactive-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    background-color: #3B3B3B;
+}
+
+.project-container {
+    border-radius: 8px;
+}
+
+.image-border {
+    border-radius: 8px;
+}
+
+
+/* Contenedor principal */
+.location-container {
+    background-color: #2A2A2A;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Título principal */
+.title-label {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin-bottom: 15px;
+}
+
+/* Grid de información */
+.info-grid {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Etiquetas de información */
+.info-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #AAAAAA;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+/* Botón de regreso */
+.back-button {
+    background-color: #3B3B3B;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+}
+
+.back-button:hover {
+    background-color: #505050;
+    color: #EEEEEE;
+    transition: background-color 0.3s ease;
 }
