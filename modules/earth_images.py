@@ -6,7 +6,7 @@ from modules import suggestions
 ee.Authenticate()
 ee.Initialize(project='prueba-imagen-satelital')
 
-def descargar_imagenes(longitud, latitud, fecha_inicio, fecha_fin, directorio='data/proyecto_trujillo'):
+def descargar_imagenes(longitud, latitud, directorio='data/directory', fecha_inicio='2010-01-01', fecha_fin='2024-12-31'):
     try:
         # Inicializar la API de Earth Engine
         ee.Initialize()
@@ -116,38 +116,69 @@ def obtener_urls_imagenes(longitud=-70.4967607, latitud=-12.0545491, fecha_inici
             print(f"Error generando URL para la imagen {id_imagen}: {e}")
     
     return urls_imagenes
+import ee
+
+# Inicializar Earth Engine (esto debe hacerse solo una vez al principio de la aplicación)
+def initialize_earth_engine():
+    try:
+        ee.Initialize(project='prueba-imagen-satelital')
+        print("Earth Engine inicializado correctamente.")
+    except Exception as e:
+        print(f"Error al inicializar Earth Engine: {e}")
+
+
+import ee
 
 def get_image(longitud, latitud):
     """
     Genera la URL de una imagen satelital RGB para las coordenadas específicas.
     """
-    ee.Authenticate()
-    ee.Initialize(project='prueba-imagen-satelital')
-
-    # Define una región de interés (ROI)
+    # Definir la región de interés (ROI)
     roi = ee.Geometry.Rectangle([longitud - 0.015, latitud - 0.015, longitud + 0.015, latitud + 0.015])
 
-    # Filtra la colección para obtener imágenes recientes del ROI
+    # Filtrar la colección para obtener imágenes recientes del ROI
     imagenes = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
         .filterBounds(roi) \
-        .filterDate('2017-03-28', '2024-09-28') \
-        .filterMetadata('CLOUDY_PIXEL_PERCENTAGE', 'less_than', 10)
+        .filterDate('2010-01-01', '2024-09-28')  # Relajar el rango de fechas
 
+    # Verificar el número de imágenes en la colección
+    num_imagenes = imagenes.size().getInfo()
+    print(f"Se encontraron {num_imagenes} imágenes en la región de interés.")
+
+    if num_imagenes == 0:
+        print("No se encontraron imágenes para la región de interés.")
+        return None
+
+    # Seleccionar la imagen central (mediana de las imágenes)
     imagen = imagenes.median()
+
+    # Verificar si la imagen contiene bandas RGB
+    bandas = imagen.bandNames().getInfo()
+    print("Bandas disponibles en la imagen:", bandas)
+
+    if 'B4' not in bandas or 'B3' not in bandas or 'B2' not in bandas:
+        print("No se encontraron bandas RGB (B4, B3, B2) en la imagen.")
+        return None
 
     # Visualizar la imagen con las bandas RGB de Sentinel-2
     imagenrgb = imagen.visualize(**{
-        'min': 0,
-        'max': 2000,
-        'bands': ['B4', 'B3', 'B2']
+        'min': 0,  # Ajuste para las bandas de Sentinel-2
+        'max': 10000,  # Rango de valores de las bandas de Sentinel-2
+        'bands': ['B4', 'B3', 'B2']  # Bandas RGB de Sentinel-2
     })
 
+    # Generar la URL de la imagen en formato JPG
     url = imagenrgb.getThumbURL({
         'region': roi,
         'dimensions': 800,
         'format': 'jpg'
     })
 
+    if not url:
+        print("Error al generar la URL de la imagen.")
+        return None
+
+    print(f"URL de la imagen: {url}")
     return url
 
 def get_spectral_signature(longitud, latitud, fecha_inicio='2024-01-01', fecha_fin='2024-12-31'):
@@ -215,7 +246,7 @@ def url_imagen_vegetacion_coloreada(longitud, latitud, fecha_inicio='2024-01-01'
 
     return url
 
-def calcular_porcentaje_vegetacion_y_url(longitud, latitud, fecha_inicio, fecha_fin):
+def calcular_porcentaje_vegetacion_y_url(longitud, latitud, fecha_inicio='2010-01-01', fecha_fin='2024-01-01'):
     # Definir la región de interés
     roi = ee.Geometry.Rectangle([longitud - 0.04, latitud - 0.04, longitud + 0.04, latitud + 0.04])
     

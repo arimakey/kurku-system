@@ -1,7 +1,7 @@
 import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw
+from gi.repository import Gtk, Adw, GLib
 from utils.xml_loader import load_projects_from_xml  # Cargar los proyectos
 from views.create_project import create_project
 from views.select_models import select_models
@@ -12,6 +12,7 @@ from views.select_name import create_add_location_view
 import xml.etree.ElementTree as ET
 import tempfile
 import os
+from views.loading_project import loading_project
 
 class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
@@ -69,7 +70,7 @@ class MainWindow(Gtk.ApplicationWindow):
         create_project_screen = create_project(self.change_screen, self.projects, self)
         select_models_screen = select_models(self.change_screen, self.save_project_data)
         select_place_screen = select_place(self.change_screen, self.save_project_data)
-        add_location_screen = create_add_location_view(self.change_screen, self.save_project_data, self.save_project_to_xml)
+        add_location_screen = create_add_location_view(self.change_screen, self.save_project_data)
 
         # Añadir pantallas al stack
         self.stack.add_named(create_project_screen, "create_project")
@@ -78,8 +79,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.stack.add_named(add_location_screen, "add_location_screen")
 
     def change_screen(self, screen_name, location_data=None):
-        # Cambiar la pantalla visible en el stack
-        if screen_name == "show_location" and location_data:
+        if screen_name == "loading_project":
+            loading_screen = loading_project(self.project_data, self.save_project_data, self.save_project_to_xml, self.change_screen)
+            self.stack.add_named(loading_screen, "loading_project_screen")
+            self.stack.set_visible_child_name("loading_project_screen")
+        elif screen_name == "create_project":
+            create_project_screen = create_project(self.change_screen, self.projects, self)
+            self.stack.add_named(create_project_screen, "create_project_screen")
+            self.stack.set_visible_child_name("create_project_screen")
+        elif screen_name == "show_location" and location_data:
             show_location_screen = show_location(self.change_screen, location_data)
             self.stack.add_named(show_location_screen, "show_location_screen")
             self.stack.set_visible_child_name("show_location_screen")
@@ -116,6 +124,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Guardar el archivo XML actualizado
         tree.write("projects.xml", encoding="utf-8", xml_declaration=True)
+
+
 class MainApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="com.kurku")

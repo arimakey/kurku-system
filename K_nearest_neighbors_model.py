@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 
-def K_nearest_neighbors(ruta,destino):
+def K_nearest_neighbors(ruta, destino):
 
     data = pd.read_csv(ruta)
 

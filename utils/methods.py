@@ -51,7 +51,7 @@ def mostrar_imagen(image_box, ruta_imagen):
 
         try:
             # Ruta del archivo temporal para la imagen
-            temp_image_path = os.path.join(temp_dir, "imagen_temporal.jpg")
+            temp_image_path = os.path.join(temp_dir, "tmp_img.jpg")
 
             # Si ya existe una imagen temporal, eliminarla
             if os.path.exists(temp_image_path):

@@ -78,8 +78,8 @@ def select_models(change_screen, save_project_data):
     model_box.append(button_model)
 
     star_model = create_option("SRT 1", "Modelo", "icons/Star 1.svg")
-    diamond_model = create_option("SRT '1", "Modelo", "icons/Rectangle 93.svg")
-    circle_model = create_option("SRT'2", "Modelo", "icons/Ellipse 9.svg")
+    diamond_model = create_option("SRT' 1", "Modelo", "icons/Rectangle 93.svg")
+    circle_model = create_option("SRT-2", "Modelo", "icons/Ellipse 9.svg")
 
     # Asignar la clase 'selected' al primer modelo (por defecto)
     circle_model.get_style_context().add_class("selected")
@@ -88,7 +88,7 @@ def select_models(change_screen, save_project_data):
     save_project_data('model', 'Modelo 1')
 
     # Conectar señales de clic a los botones
-    circle_model.connect("clicked", on_button_clicked_model, circle_model, star_model, diamond_model, 'model', 'Modelo 1', save_project_data)
+    circle_model.connect("clicked", on_button_clicked_model, circle_model, star_model, diamond_model, 'model', 'RandomForest', save_project_data)
     star_model.connect("clicked", on_button_clicked_model, star_model, diamond_model, circle_model, 'model', 'Modelo 2', save_project_data)
     diamond_model.connect("clicked", on_button_clicked_model, diamond_model, circle_model, star_model, 'model', 'Modelo 3', save_project_data)
 

@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 
-def decision_tree(ruta,destino):
+def decision_tree(ruta, destino):
     data = pd.read_csv(ruta)
 
     # Convertir la fecha en formato ordinal para manejar la temporalidad
@@ -31,7 +31,7 @@ def decision_tree(ruta,destino):
     print(f'R^2: {r2:.2f}')
 
     # Guardar el modelo entrenado en la carpeta 'proyecto_trujillo'
-    joblib.dump(model, 'data/proyecto_trujillo/arbol_desicion_model.pkl')
+    joblib.dump(model, '{ruta}/arbol_desicion_model.pkl')
 
     # Guardar los resultados en un archivo CSV
     resultados = pd.DataFrame({
@@ -40,6 +40,6 @@ def decision_tree(ruta,destino):
         'vegetation_percentage_predicho': y_pred  # Porcentaje de vegetación predicho
     })
 
-    resultados.to_csv(destino, index=False)
+    resultados.to_csv('{ruta}/data.csv', index=False)
 
     return resultados

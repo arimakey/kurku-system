@@ -2,7 +2,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk
 
-def create_add_location_view(change_screen, save_project_data, save_project_to_xml):
+def create_add_location_view(change_screen, save_project_data):
     # Crear contenedor principal
     main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
     main_container.get_style_context().add_class("background-custom")
@@ -58,8 +58,7 @@ def create_add_location_view(change_screen, save_project_data, save_project_to_x
         description_entry.get_buffer().get_text(description_entry.get_buffer().get_start_iter(), description_entry.get_buffer().get_end_iter(), True),  # Obtener todo el texto del TextView
         state_combo.get_active_id(),
         change_screen,
-        save_project_data,
-        save_project_to_xml
+        save_project_data
     ))
     
     cancel_button = Gtk.Button(label="Cancelar")
@@ -77,24 +76,15 @@ def create_add_location_view(change_screen, save_project_data, save_project_to_x
 
     return main_container
 
-def save_location_data(name, description, state, change_screen, save_project_data, save_project_to_xml):
+def save_location_data(name, description, state, change_screen, save_project_data):
     """
     Función para guardar los datos ingresados y realizar una acción (como volver a la pantalla principal).
     Aquí solo mostramos los datos por simplicidad.
     """
-    print(f"Nombre: {name}")
-    print(f"Descripción: {description}")
-    print(f"Estado: {state}")
-    
-    # Aquí puedes agregar la lógica para guardar los datos en una base de datos o realizar alguna acción.
-
     # Si usas save_project_data, podrías almacenar esos datos de alguna manera, por ejemplo:
     save_project_data("name", name)
     save_project_data("description", description)
     save_project_data("state", state)
-
-    # Si tienes un método save_project_to_xml, puedes invocar también allí
-    save_project_to_xml()
-
+    
     # Volver a la pantalla principal (cambiar según tu lógica)
-    change_screen("previous_screen")
+    change_screen("loading_project")
