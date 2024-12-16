@@ -6,29 +6,43 @@ from modules import suggestions
 ee.Authenticate()
 ee.Initialize(project='prueba-imagen-satelital')
 
-def descargar_imagenes(longitud, latitud, fecha_inicio, fecha_fin, directorio='data/images'):
+def descargar_imagenes(longitud, latitud, fecha_inicio, fecha_fin, directorio='data/proyecto_trujillo'):
     try:
+        # Inicializar la API de Earth Engine
         ee.Initialize()
+        
+        # Definir el área de interés (ROI)
         roi = ee.Geometry.Rectangle([longitud-0.03, latitud-0.03, longitud+0.03, latitud+0.03])
+
+        # Obtener la colección de imágenes
         imagenes = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED") \
                     .filterBounds(roi) \
                     .filterDate(fecha_inicio, fecha_fin) \
-                    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 5))
+                    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 1))
 
+        # Convertir la lista de imágenes en una lista de Python
         lista_imagenes = imagenes.toList(imagenes.size()).getInfo()
 
+        # Verificar y crear el directorio principal si no existe
         if not os.path.exists(directorio):
             os.makedirs(directorio)
 
-        # Abrir archivo CSV una sola vez y escribir encabezados
-        with open(os.path.join(directorio, 'vegetation_data.csv'), 'w') as file:
-            file.write('fecha,vegetation_percentage\n')  # Escribir nombres de columnas
+        # Crear la subcarpeta 'images' para almacenar las imágenes NDVI
+        images_directory = os.path.join(directorio, 'images')
+        if not os.path.exists(images_directory):
+            os.makedirs(images_directory)
 
+        # Crear el archivo CSV fuera de la carpeta 'images'
+        csv_path = os.path.join(directorio, 'vegetation_data.csv')
+        with open(csv_path, 'w') as file:
+            file.write('fecha,vegetation_percentage\n')  # Escribir encabezados
+
+        # Procesar cada imagen y guardarla
         for imagen_info in lista_imagenes:
             id_imagen = imagen_info['id']
             imagen = ee.Image(id_imagen)
 
-            # Calcular NDVI
+            # Calcular el NDVI
             ndvi = imagen.normalizedDifference(['B8', 'B4']).rename('NDVI')
             ndvi_image = ndvi.visualize(min=0, max=1, palette=['white', 'green'])
             ndvi_url = ndvi_image.getDownloadURL({
@@ -43,18 +57,21 @@ def descargar_imagenes(longitud, latitud, fecha_inicio, fecha_fin, directorio='d
                 reducer=ee.Reducer.mean(),
                 geometry=roi,
                 scale=10
-            ).get('NDVI').getInfo() * 100  # Convertir la media en porcentaje
+            ).get('NDVI').getInfo() * 100  # Convertir a porcentaje
 
             # Descargar la imagen NDVI
             ndvi_response = requests.get(ndvi_url)
-            fecha = id_imagen.split('/')[-1]  # Asumiendo que el ID contiene la fecha al final
-            ndvi_filename = os.path.join(directorio, f'{fecha}_NDVI.jpg')
+            fecha = id_imagen.split('/')[-1]  # Extraer la fecha del ID
+            ndvi_filename = os.path.join(images_directory, f'{fecha}_NDVI.jpg')
+
             with open(ndvi_filename, 'wb') as f:
                 f.write(ndvi_response.content)
 
-            # Guardar información de vegetación en el archivo CSV
-            with open(os.path.join(directorio, 'vegetation_data.csv'), 'a') as file:
+            # Guardar la información de vegetación en el archivo CSV
+            with open(csv_path, 'a') as file:
                 file.write(f"{fecha},{porcentaje_vegetacion}\n")
+
+        print("Descarga y procesamiento completado.")
 
     except ee.EEException as e:
         print("Error al interactuar con Google Earth Engine:", e)
