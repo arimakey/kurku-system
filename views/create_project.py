@@ -117,7 +117,6 @@ def on_file_dialog_response(dialog, response):
     dialog.destroy()
 
 
-
 class LocationCard(Gtk.Box):
     def __init__(self, location, change_screen, parent_window):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
@@ -174,7 +173,7 @@ class LocationCard(Gtk.Box):
         name_label.get_style_context().add_class("name-label")
         name_label.set_halign(Gtk.Align.START)
 
-        coordinates_label = Gtk.Label(label=location.get("coordinates", "No disponible"))
+        coordinates_label = Gtk.Label(label=f"Lon: {location['longitude']}, Lat: {location['latitude']}")
         coordinates_label.get_style_context().add_class("coordinate-label")
         coordinates_label.set_halign(Gtk.Align.END)
         coordinates_label.set_hexpand(True)
@@ -204,9 +203,15 @@ class LocationCard(Gtk.Box):
     def on_card_clicked(self, gesture, n_press, x, y):
         location_data = {
             "name": self.location["name"],
-            "image": self.location["image"],
             "description": self.location.get("description", "No disponible"),
-            "coordinates": self.location.get("coordinates", "No disponible"),
-            "state": self.location["state"]
+            "location": self.location["location"],
+            "state": self.location["state"],
+            "image": self.location["image"],  # Ruta de la imagen
+            "height": self.location["height"],
+            "width": self.location["width"],
+            "model": self.location["model"],
+            "longitude": self.location["longitude"],
+            "latitude": self.location["latitude"],
+            "analysis_route": self.location["analysis_route"]
         }
         self.change_screen("show_location", location_data)

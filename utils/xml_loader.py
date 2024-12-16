@@ -16,10 +16,17 @@ def load_projects_from_xml(file_path):
         description = project_elem.find("description").text
         location = project_elem.find("location").text
         state = project_elem.find("state").text.lower() == "active"  # Convertir 'active' a booleano
-        image = project_elem.find("image").text
+        
+        # No es necesario buscar la etiqueta <image> en el XML
+        # Ruta fija de la imagen de vista previa
+        image = "/data/{}/preview.jpg".format(name.replace(" ", "_").lower())  # Ruta fija con el nombre del proyecto
+
+        height = project_elem.find("height").text if project_elem.find("height") is not None else None
+        width = project_elem.find("width").text if project_elem.find("width") is not None else None
+
         model = project_elem.find("model").text
-        longitude = project_elem.find("longitude").text
-        latitude = project_elem.find("latitude").text
+        longitude = float(project_elem.find("longitude").text) if project_elem.find("longitude") is not None else None
+        latitude = float(project_elem.find("latitude").text) if project_elem.find("latitude") is not None else None
         analysis_route = project_elem.find("analysis_route").text
 
         # Crear un diccionario con los datos del proyecto
@@ -28,7 +35,9 @@ def load_projects_from_xml(file_path):
             "description": description,
             "location": location,
             "state": state,
-            "image": image,
+            "image": image,  # Ruta de la imagen de vista previa
+            "height": height,
+            "width": width,
             "model": model,
             "longitude": longitude,
             "latitude": latitude,

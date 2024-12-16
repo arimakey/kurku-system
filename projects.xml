@@ -5,10 +5,11 @@
         <description>This is the first example project.</description>
         <location>Mexico City</location>
         <state>active</state>
-        <image>./image.jpg</image>
         <model>RandomForest</model>
         <longitude>-99.1332</longitude>
         <latitude>19.4326</latitude>
         <analysis_route>/data/alpha_route</analysis_route>
+        <height>600</height>
+        <width>800</width>
     </project>
 </projects>

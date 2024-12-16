@@ -55,10 +55,15 @@ import requests
 import tempfile
 from gi.repository import Gtk, GdkPixbuf, GLib
 
+import threading
+import requests
+import tempfile
+from gi.repository import Gtk, GdkPixbuf, GLib
 
 def mostrar_imagen(image_box, ruta_imagen):
     """
     Carga una imagen desde una URL o archivo local de forma asincrónica y la muestra en image_box.
+    Muestra un mensaje de "Cargando..." mientras la imagen se carga.
     """
 
     def load_image():
@@ -66,7 +71,13 @@ def mostrar_imagen(image_box, ruta_imagen):
         Carga la imagen en un hilo separado.
         """
         image_widget = None
+        loading_label = None
+        
         try:
+            # Mostrar el mensaje de "Cargando..."
+            loading_label = Gtk.Label(label="Cargando...")
+            GLib.idle_add(update_image_box, image_box, loading_label)
+
             # Si la ruta es una URL, descargar la imagen
             if ruta_imagen.startswith("http"):
                 response = requests.get(ruta_imagen)
@@ -86,6 +97,10 @@ def mostrar_imagen(image_box, ruta_imagen):
 
         except Exception as e:
             print(f"Error al cargar la imagen: {e}")
+            # En caso de error, mostrar un mensaje de error
+            error_label = Gtk.Label(label="Error al cargar la imagen")
+            GLib.idle_add(update_image_box, image_box, error_label)
+            return
 
         # Usar GLib.idle_add para actualizar la interfaz desde el hilo principal
         if image_widget:
@@ -94,10 +109,9 @@ def mostrar_imagen(image_box, ruta_imagen):
     # Lanzar la carga de la imagen en un hilo separado
     threading.Thread(target=load_image, daemon=True).start()
 
-
-def update_image_box(image_box, image_widget):
+def update_image_box(image_box, new_widget):
     """
-    Actualiza el contenedor image_box con el nuevo Gtk.Image.
+    Actualiza el contenedor image_box con el nuevo widget (imagen o mensaje de carga/error).
     """
     # Eliminar cualquier widget existente en el image_box
     child = image_box.get_first_child()
@@ -105,6 +119,6 @@ def update_image_box(image_box, image_widget):
         image_box.remove(child)
         child = image_box.get_first_child()
 
-    # Agregar el nuevo widget con la imagen
-    image_box.append(image_widget)
+    # Agregar el nuevo widget (ya sea la imagen o el mensaje de "Cargando..." o error)
+    image_box.append(new_widget)
     image_box.show_all()

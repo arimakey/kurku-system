@@ -81,6 +81,8 @@ def select_place(change_screen):
         result.append(text_result)
 
         scrolled_result = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        
+        scrolled_result.set_vexpand(True)
 
         # Barra de desplazamiento
         scrolled_window = Gtk.ScrolledWindow()
@@ -113,13 +115,20 @@ def select_place(change_screen):
             button.set_child(label)
             scrolled_result.append(button)
 
-        # Imagen inicial
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file("images/seleccione.jpg")
-        image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
-        image_widget.set_css_classes(["image-result"])
-        image_widget.set_hexpand(True)
-        image_box.append(image_widget)
-        image_box.show()
+        # Imagen inicial con manejo de errores
+        try:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file("images/seleccione.jpg")
+            image_widget = Gtk.Image.new_from_pixbuf(pixbuf)
+            image_widget.set_css_classes(["image-result"])
+            image_widget.set_hexpand(True)
+            image_box.append(image_widget)
+        except Exception as e:
+            print(f"Error al cargar la imagen: {e}")
+            error_label = Gtk.Label(label="Imagen no encontrada")
+            image_box.append(error_label)
+
+        # Mostrar el contenido
+        result_box.show()
 
     # Conectar el botón de búsqueda
     search_button.connect("clicked", lambda x: mostrar_nombres())

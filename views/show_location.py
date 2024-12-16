@@ -5,10 +5,10 @@ from gi.repository import Gtk
 def show_location(change_screen, location_data):
     # Contenedor principal
     main_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-    main_container.set_margin_top(20)
-    main_container.set_margin_bottom(20)
-    main_container.set_margin_start(20)
-    main_container.set_margin_end(20)
+    main_container.set_margin_top(10)
+    main_container.set_margin_bottom(10)
+    main_container.set_margin_start(10)
+    main_container.set_margin_end(10)
     main_container.get_style_context().add_class("location-container")
 
     # Título
@@ -24,7 +24,7 @@ def show_location(change_screen, location_data):
 
     image = Gtk.Picture.new_for_filename(location_data["image"])
     image.set_content_fit(Gtk.ContentFit.CONTAIN)
-    image.set_size_request(300, 300)
+    image.set_size_request(200, 200)
     image_container.append(image)
     main_container.append(image_container)
 
@@ -35,33 +35,39 @@ def show_location(change_screen, location_data):
     info_grid.set_halign(Gtk.Align.CENTER)
     info_grid.get_style_context().add_class("info-grid")
 
-    # Etiquetas de información
-    name_label = Gtk.Label(label="Nombre:")
-    name_label.get_style_context().add_class("info-title")
-    name_value = Gtk.Label(label=location_data['name'])
-    name_value.get_style_context().add_class("info-value")
-    name_value.set_halign(Gtk.Align.START)
+    # Añadir elementos al grid de forma dinámica
+    row = 0
+    for key, value in location_data.items():
+        if key == "longitude" or key == "latitude":  # Mostrar latitud y longitud
+            label = Gtk.Label(label=f"{key.capitalize()}:")
+            label.get_style_context().add_class("info-title")
+            value_label = Gtk.Label(label=str(value))
+            value_label.get_style_context().add_class("info-value")
+            value_label.set_halign(Gtk.Align.START)
 
-    description_label = Gtk.Label(label="Descripción:")
-    description_label.get_style_context().add_class("info-title")
-    description_value = Gtk.Label(label=location_data.get('description', 'No disponible'))
-    description_value.get_style_context().add_class("info-value")
-    description_value.set_halign(Gtk.Align.START)
+            # Añadir los widgets al grid
+            info_grid.attach(label, 0, row, 1, 1)
+            info_grid.attach(value_label, 1, row, 1, 1)
+            row += 1
+        elif key != "image" and key != "longitude" and key != "latitude":  # Excluir image, longitude y latitude
+            label = Gtk.Label(label=f"{key.capitalize()}:")
+            label.get_style_context().add_class("info-title")
+            value_label = Gtk.Label(label=str(value))
+            value_label.get_style_context().add_class("info-value")
+            value_label.set_halign(Gtk.Align.START)
 
-    coordinates_label = Gtk.Label(label="Coordenadas:")
-    coordinates_label.get_style_context().add_class("info-title")
-    coordinates_value = Gtk.Label(label=location_data.get('coordinates', 'No disponible'))
-    coordinates_value.get_style_context().add_class("info-value")
-    coordinates_value.set_halign(Gtk.Align.START)
+            # Añadir los widgets al grid
+            info_grid.attach(label, 0, row, 1, 1)
+            info_grid.attach(value_label, 1, row, 1, 1)
+            row += 1
 
-    # Añadir elementos al grid
-    info_grid.attach(name_label, 0, 0, 1, 1)
-    info_grid.attach(name_value, 1, 0, 1, 1)
-    info_grid.attach(description_label, 0, 1, 1, 1)
-    info_grid.attach(description_value, 1, 1, 1, 1)
-    info_grid.attach(coordinates_label, 0, 2, 1, 1)
-    info_grid.attach(coordinates_value, 1, 2, 1, 1)
+    # Mostrar la ruta del proyecto
+    project_route_label = Gtk.Label(label=f"Ruta del proyecto: {location_data.get('analysis_route', 'No disponible')}")
+    project_route_label.get_style_context().add_class("info-title")
+    project_route_label.set_halign(Gtk.Align.START)
+    main_container.append(project_route_label)
 
+    # Añadir el grid al contenedor principal
     main_container.append(info_grid)
 
     # Botón de regreso
